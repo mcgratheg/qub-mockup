@@ -36,8 +36,19 @@ class Login {
         
     }
     
-    function update() {
+    function updatePassword($password_hash, $email) {
         
+        $query = "UPDATE 7062prologindetails SET Password=? WHERE Email=?";
+        $stmt = $this->connection->prepare($query);
+        $stmt->bind_param('ss', $password_hash, $email);
+        
+        if($stmt->execute()) {
+            $result = true;
+        } else {
+            $result = false;
+        }
+        
+        return $result;
     }
     
     function delete() {

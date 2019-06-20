@@ -7,7 +7,7 @@ class Database {
 	private static $_instance; //The single instance
 	private $_host = "localhost";
 	private $_username = "root";
-	private $_password = "";
+	private $_password = "keyblade";
 	private $_database = "qub_website_mock";
 	/*
 	Get an instance of the Database

@@ -31,6 +31,9 @@ class User {
         
         if($stmt->execute()) {
             $result = $stmt->get_result();
+            $executed = true;
+        } else {
+            $executed = false;
         }
 
         if($result->num_rows == 1) {
@@ -42,6 +45,7 @@ class User {
             $this->last_name = $row['LastName'];
         }
         
+        return $executed;
         
     }
     
@@ -70,7 +74,6 @@ class User {
             $this->profile_image = $row['ProfileImage'];
             $this->home_number = $row['HomeNumber'];
             $this->mobile_number = $row['MobileNumber'];
-            
             $login->email = $row['Email'];
         }
     }

@@ -1,10 +1,13 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', true);
 include('secure/connect/database.php');
-//include('secure/connect/conn.php');
+include('secure/objects/user.php');
+include('secure/objects/login.php');
+
 $db = Database::getInstance();
 $mysqli = $db->getConnection();
+
+$user = new User($mysqli);
+$login = new Login($mysqli);
  
 ?>
 <!DOCTYPE html>
@@ -58,29 +61,21 @@ $mysqli = $db->getConnection();
 		<?php
 			if(isset($_POST) & !empty($_POST)){
 			$postemail = trim($_POST['email']);
-			$query = "SELECT * FROM 7062prologindetails INNER JOIN 7062prouser ON 7062prologindetails.User_ID=7062prouser.UserID WHERE 7062prologindetails.Email = '$postemail'";
-			//$result = mysqli_query($conn, $query);
-                        $result = $mysqli->query($query);
-				if(mysqli_num_rows($result) == 1){
+                        $result = $user->readUser($postemail);
+				if($result){
 					$pass = rand(999, 99999);
 					$password_hash = md5($pass);
-		
-					$row=mysqli_fetch_assoc($result);
- 
-					$updatepass = "UPDATE `7062prologindetails` SET Password='$password_hash' WHERE Email='$postemail'";
-					$result = mysqli_query($conn, $updatepass);
+
+                                        $result = $login->updatePassword($password_hash, $postemail);
 					if($result){
-						$username = $row['FirstName'];
-						$password = $row['Password'];
-						$to = $row['Email'];
 						$subject = "Your New Password";
  
-						$message = "Hi $username,
+						$message = "Hi $user->first_name,
 						Please use this password to login $pass
 						Once logged in, please change your password as soon as possible.
 						Regards,
 						Site Admin";
-						if(mail($to, $subject, $message)){
+						if(mail($postemail, $subject, $message)){
 							echo "<p>Password has been sent, please check your email</p>";
 						}else{
 							echo "<p>Password has been sent, please check your email</p>";
