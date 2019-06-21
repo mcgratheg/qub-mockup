@@ -34,6 +34,20 @@ class Tutor {
         }
     }
     
+    public function searchTutor($userid) {
+        $query = "SELECT FirstName, LastName, ProfileImage, Email, RoomNumber, RoomAddress, PhoneExtension FROM 7062prouser INNER JOIN 7062prologindetails ON 
+					7062prouser.UserID=7062prologindetails.User_ID INNER JOIN 7062protutordetails ON 7062prouser.UserID=7062protutordetails.User_ID WHERE 7062prouser.UserID=?";
+        
+        $stmt = $this->connection->prepare($query);
+        $stmt->bind_param('i', $userid);
+        
+        if($stmt->execute()) {
+            $result = $stmt->get_result();
+        }
+
+        return $result;
+    }
+    
     public function create() {
         
     }
