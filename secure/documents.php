@@ -6,23 +6,23 @@
 		header("Location: ../login.php");
 		
 	}
-	
-	
-	include("connect/conn.php");
-	
-	$email = $_SESSION["cater_40105701"];
-	$userquery = "SELECT * FROM 7062prouser INNER JOIN 7062prologindetails ON 7062prouser.UserID=7062prologindetails.User_ID WHERE 7062prologindetails.Email='$email'";
-	$result = mysqli_query($conn, $userquery) or die(mysqli_error($conn));
-	
-	$row=mysqli_fetch_assoc($result);
-	
-	$userid = $row["UserID"];
-	$userfirst = $row["FirstName"];
-	$userlast = $row["LastName"];
-	$usertype = $row["UserType_ID"];
+        
+include("connect/database.php");
+include("objects/user.php");
+include("objects/login.php");
+include("objects/subject.php");
+include("objects/classdetails.php");
+include("objects/document.php");
 
-	
-	
+$email = $_SESSION["cater_40105701"];
+
+$db = Database::getInstance();
+$mysqli = $db->getConnection();
+
+$user = new User($mysqli);
+$login = new Login($mysqli);
+
+$stmt = $user->readUser($email);	
 ?>
 <!DOCTYPE html>
 <html>
@@ -69,7 +69,7 @@
 			<?php echo"<a href='index.php' class='logo'>
 			<img src='../img/bird-bluetit.png' width='50px'></a>
 			<a href='index.php' class='button'>McG VLE</a>
-			<a href='displayprofile.php?userid=$userid' class='button' id='userbutton'>$userfirst $userlast</a>
+			<a href='displayprofile.php?userid=$user->id' class='button' id='userbutton'>$user->first_name $user->last_name</a>
                         <span>|</span>
                         <a href='signout.php' class='button'>Sign Out</a>";?>
 		</header>
@@ -80,11 +80,11 @@
 				<label for="drawer-control" class="drawer-close"></label>
 				<ul>
 					<li><h4>Navigation</h4></li>
-					<?php echo"<li><a href='displayprofile.php?userid=$userid' class='button'>$userfirst $userlast</a></li>
+					<?php echo"<li><a href='displayprofile.php?userid=$user->id' class='button'>$user->first_name $user->last_name</a></li>
 					<li><a href='index.php' class='button'>Home</a></li>";?>
 					<li><a href="subjectsearch.php" class="button">Subjects</a></li>
 					<li><a href="staffsearch.php" class="button">Staff</a></li>
-                                        <?php if($usertype == 1){ echo"<li><a href='admin/index.php' class='button'>Admin Portal</a></li>";}?>
+                                        <?php if($user->type == 1){ echo"<li><a href='admin/index.php' class='button'>Admin Portal</a></li>";}?>
 					<li><a href="signout.php" class="button" id="signout">Sign Out</a></li>
 					
 				</ul>
@@ -93,18 +93,18 @@
 			<?php 
 				$code = $_GET["subject"];
 				
-				$query = "SELECT UserID FROM 7062prouser INNER JOIN 7062proclassdetails ON 7062prouser.UserID=7062proclassdetails.User_ID WHERE UserID=$userid";
-				$result = mysqli_query($conn, $query);
-				if(mysqli_num_rows($result) == 1 || $usertype!=3){
-					$query = "SELECT SubjectID, SubjectLevel_ID, SubjectName FROM 7062prosubject WHERE SubjectCode = '$code'";
-					$display = mysqli_query($conn, $query);
-						if(mysqli_num_rows($display) > 0) {
-						while ($row = mysqli_fetch_assoc($display)) {
-							$subjectid = $row["SubjectID"];
-							$subjectlevel = $row["SubjectLevel_ID"];
-							$subject = $row["SubjectName"];
+                                $class_details = new ClassDetails($mysqli);
+                                $class_result = $class_details->readClassDetails($user->id);
+				if($class_result->num_rows == 1 || $user->type!=3){
+                                        $subject = new Subject($mysqli);
+                                        $subject_result = $subject->read($code);
+						if($subject_result->num_rows > 0) {
+						while ($row = $subject_result->fetch_array(MYSQLI_ASSOC)) {
+							$subject->id = $row["SubjectID"];
+							$subject->subject_level_id = $row["SubjectLevel_ID"];
+							$subject->name = $row["SubjectName"];
 							echo "<div id='titlehead'>
-									<h2>$code : $subject</h2>
+									<h2>$code : $subject->name</h2>
 									<div class='row'>
 										<p><a href='displaysubject.php?subject=$code'>Information</a></p>
 										<span>|</span>
@@ -115,11 +115,10 @@
 								</div><br>";	
 					
 
-				$documentquery = "SELECT * FROM 7062prodocument INNER JOIN 7062prosubject ON 7062prodocument.Subject_ID=7062prosubject.SubjectID INNER JOIN 7062prouser ON
-				7062prodocument.User_ID=7062prouser.UserID WHERE SubjectCode='$code' ORDER BY DateAdded DESC";
-				$documentresult = mysqli_query($conn, $documentquery) or die(mysqli_error($conn));
-				
-				if(mysqli_num_rows($documentresult) > 0) {
+				$document = new Document($mysqli);
+                                $document_user = new User($mysqli);
+				$document_result = $document->readDocument($code);
+				if($document_result->num_rows > 0) {
 					//echo "<p>Stuff found in table</p>";
 					echo "<table>
 							<thead>
@@ -131,20 +130,20 @@
 								</tr>	
 							</thead>
 							<tbody id='myTable'>";
-					while($row = mysqli_fetch_assoc($documentresult)){
-						$filepath = $row["Docpath"];
-						$fileext = pathinfo($filepath, PATHINFO_EXTENSION);
-						$filename = basename($filepath);
-						$uploadby = $row["User_ID"];
-						$uploadfname = $row["FirstName"];
-						$uploadlname = $row["LastName"];
-						$dateadded = date('d/m/y', strtotime($row["DateAdded"]));
+					while($row = $document_result->fetch_array(MYSQLI_ASSOC)){
+						$document->doc_path = $row["Docpath"];
+						$fileext = pathinfo($document->doc_path, PATHINFO_EXTENSION);
+						$filename = basename($document->doc_path);
+						$document->user_id = $row["User_ID"];
+						$document_user->first_name = $row["FirstName"];
+						$document_user->last_name = $row["LastName"];
+						$document->date_added = date('d/m/y', strtotime($row["DateAdded"]));
 						
 						echo "<tr>
-								<td data-label='Name'><a href='uploads/$filepath'>$filename</a></td>
-								<td data-label='Tutor'><a href='displaystaff.php?id=$uploadby'>$uploadfname $uploadlname</a></td>
-								<td data-label='Added'>$dateadded</td>
-								<td data-label='Link'><a href='uploads/$filepath' download><img src='../img/Download-01.png' width='40px;'></a></td>
+								<td data-label='Name'><a href='uploads/$document->doc_path'>$filename</a></td>
+								<td data-label='Tutor'><a href='displaystaff.php?id=$document->user_id'>$document_user->first_name $document_user->last_name</a></td>
+								<td data-label='Added'>$document->date_added</td>
+								<td data-label='Link'><a href='uploads/$document->doc_path' download><img src='../img/Download-01.png' width='40px;'></a></td>
 							</tr>";
 					}
 					echo "</tbody>
@@ -153,17 +152,17 @@
 					echo "<p>No documents available</p>";
 				}
 				
-				if($usertype !=3) {	
-						echo "<form method='post' id='uploadForm' action='uploadfile.php?userid=$userid' enctype='multipart/form-data'>
+				if($user->type !=3) {	
+						echo "<form method='post' id='uploadForm' action='uploadfile.php?userid=$user->id' enctype='multipart/form-data'>
 								<div class='row responsive-label'>
 									<label for='fileinput' id='upload-file' class='button'>Upload File</label>
-									<input type='file' id='fileinput' name='uploadfile'>
+									<input type='file' id='fileinput' name='uploadfile' class='hidden'>
 									<div id='filepath' style='margin-left:10px;'>File Name: <div id='file'></div></div>
 								</div>
 								<div class='hide-form'>
-									<input type='number' name='user' class='hidden' value='$userid' id='hideform'>
-									<input type='number' name='subject' class='hidden' value='$subjectid' id='hideform'>
-									<input type='number' name='subjectlevel' class='hidden' value='$subjectlevel' id='hideform'>
+									<input type='number' name='user' class='hidden' value='$user->id' id='hideform'>
+									<input type='number' name='subject' class='hidden' value='$subject->id' id='hideform'>
+									<input type='number' name='subjectlevel' class='hidden' value='$subject->subject_level_id' id='hideform'>
 									<input type='text' name='subjectcode' class='hidden' value='$code' id='hideform'>
 								</div>
 									<div class='row'>
@@ -188,6 +187,3 @@
 		</footer>	
 	</body>
 </html>
-<?php
-	mysqli_close($conn);
-?>

@@ -16,7 +16,7 @@ class Subject {
     }
     
     public function read($code) {
-        $query = "SELECT SubjectID, SubjectName, SubjectCode FROM 7062prosubject WHERE SubjectCode = ?";
+        $query = "SELECT * FROM 7062prosubject WHERE SubjectCode = ?";
         $stmt = $this->connection->prepare($query);
         $stmt->bind_param('s', $code);
         
@@ -27,6 +27,19 @@ class Subject {
         return $result;
         
     }
+    
+    public function readSubjectTopic($id) {
+        $query = "SELECT SubjectName, SubjectCode FROM 7062prosubject INNER JOIN 7062protopic ON 7062prosubject.SubjectID=7062protopic.Subject_ID WHERE TopicID = ?";
+        $stmt = $this->connection->prepare($query);
+        $stmt->bind_param('i', $id);
+        
+        if($stmt->execute()) {
+            $result = $stmt->get_result();
+        }
+        
+        return $result;
+        
+    }    
     
     public function create() {
         

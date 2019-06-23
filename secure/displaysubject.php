@@ -7,22 +7,20 @@
 		
 	}
 	
-	
-	include("connect/conn.php");
-	
-	$email = $_SESSION["cater_40105701"];
-	$userquery = "SELECT * FROM 7062prouser INNER JOIN 7062prologindetails ON 7062prouser.UserID=7062prologindetails.User_ID WHERE 7062prologindetails.Email='$email'";
-	$result = mysqli_query($conn, $userquery) or die(mysqli_error($conn));
-	
-	$row=mysqli_fetch_assoc($result);
-	
-	$userid = $row["UserID"];
-	$userfirst = $row["FirstName"];
-	$userlast = $row["LastName"];
-	$usertype = $row["UserType_ID"];
+include("connect/database.php");
+include("objects/user.php");
+include("objects/login.php");
+include("objects/subject.php");
 
-	
-	
+$email = $_SESSION["cater_40105701"];
+
+$db = Database::getInstance();
+$mysqli = $db->getConnection();
+
+$user = new User($mysqli);
+$login = new Login($mysqli);
+
+$stmt = $user->readUser($email);	
 ?>
 <!DOCTYPE html>
 <html>
@@ -51,7 +49,7 @@
 			<?php echo"<a href='index.php' class='logo'>
 			<img src='../img/bird-bluetit.png' width='50px'></a>
 			<a href='index.php' class='button'>McG VLE</a>
-			<a href='displayprofile.php?userid=$userid' class='button' id='userbutton'>$userfirst $userlast</a>
+			<a href='displayprofile.php?userid=$user->id' class='button' id='userbutton'>$user->first_name $user->last_name</a>
                         <span>|</span>
                         <a href='signout.php' class='button'>Sign Out</a>";?>
 		</header>
@@ -62,11 +60,11 @@
 				<label for="drawer-control" class="drawer-close"></label>
 				<ul>
 					<li><h4>Navigation</h4></li>
-					<?php echo"<li><a href='displayprofile.php?userid=$userid' class='button'>$userfirst $userlast</a></li>
+					<?php echo"<li><a href='displayprofile.php?userid=$user->id' class='button'>$user->first_name $user->last_name</a></li>
 					<li><a href='index.php' class='button'>Home</a></li>";?>
 					<li><a href="subjectsearch.php" class="button">Subjects</a></li>
 					<li><a href="staffsearch.php" class="button">Staff</a></li>
-					<?php if($usertype==1){echo"<li><a href='admin/index.php' class='button'>Admin Portal</a></li>";}?>
+					<?php if($user->type==1){echo"<li><a href='admin/index.php' class='button'>Admin Portal</a></li>";}?>
 					<li><a href="signout.php" class="button" id="signout">Sign Out</a></li>
 					
 				</ul>
@@ -74,30 +72,31 @@
 			<div class="col-sm-12 col-md-8 col-lg-10" id="main">
 			<?php 
 				$subjectcode = $_GET["subject"];
+                                
+                                $subject = new Subject($mysqli);
+				$result = $subject->read($subjectcode);
 				
-				$subjectquery = "SELECT * FROM 7062prosubject WHERE SubjectCode='$subjectcode'";
-				$subjectresult = mysqli_query($conn, $subjectquery) or die(mysqli_error($conn));
-				
-				if(mysqli_num_rows($subjectresult) == 1) {
-					while($row = mysqli_fetch_assoc($subjectresult)) {
-						$subjectname = $row["SubjectName"];
-						$subjectdesc = $row["SubjectDescription"];
+				if($result->num_rows == 1) {
+					$row = $result->fetch_array(MYSQLI_ASSOC);
+						$subject->name = $row["SubjectName"];
+						$subject->description = $row["SubjectDescription"];
+                                                $subject->code = $row["SubjectCode"];
 						
 					 echo "<div id='titlehead'>
-								<h2>$subjectcode : $subjectname</h2>
+								<h2>$subject->code : $subject->name</h2>
 								<div class='row'>
 									<h5>Information</h5>
 									<span>|</span>
-									<p><a href='documents.php?subject=$subjectcode'>Resources</a></p>
+									<p><a href='documents.php?subject=$subject->code'>Resources</a></p>
 									<span>|</span>
-									<p><a href='forum.php?subject=$subjectcode'>Forum</a></p>
+									<p><a href='forum.php?subject=$subject->code'>Forum</a></p>
 								</div>	
 							</div><br>";	
 					
-					if($subjectdesc!=""){
+					if($subject->description!=""){
 						echo "<div class='col-sm-12 col-md-8'>
 									<h4>Module Description</h4>
-									<pre>$subjectdesc</pre>
+									<pre>$subject->description</pre>
 								</div>";
 						}else{
 						echo "<div class='col-sm-12 col-md-8'>
@@ -105,12 +104,12 @@
 								<p>No description available</p>
 							</div>";
 						}
-					}
+					
 				}
 				
-				if($usertype==1){
+				if($user->type==1){
 					echo "<div class='row' id='nav'>
-							<button class='primary' style='margin-left:20px;'><a href='admin/editsubject.php?subject=$subjectcode'>Edit Subject</a></button>
+							<button class='primary' style='margin-left:20px;'><a href='admin/editsubject.php?subject=$subject->code'>Edit Subject</a></button>
 						</div>";
 				}
 
@@ -125,6 +124,3 @@
 		</footer>	
 	</body>
 </html>
-<?php
-	mysqli_close($conn);
-?>

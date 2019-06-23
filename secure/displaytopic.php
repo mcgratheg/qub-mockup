@@ -6,21 +6,23 @@
 		header("Location: ../login.php");
 		
 	}
-	
-	
-	include("connect/conn.php");
-	
-	$email = $_SESSION["cater_40105701"];
-	$userquery = "SELECT * FROM 7062prouser INNER JOIN 7062prologindetails ON 7062prouser.UserID=7062prologindetails.User_ID WHERE 7062prologindetails.Email='$email'";
-	$result = mysqli_query($conn, $userquery) or die(mysqli_error($conn));
-	
-	$row=mysqli_fetch_assoc($result);
-	
-	$userid = $row["UserID"];
-	$userfirst = $row["FirstName"];
-	$userlast = $row["LastName"];
-	$usertype = $row["UserType_ID"];
-	
+        
+include("connect/database.php");
+include("objects/user.php");
+include("objects/login.php");
+include("objects/subject.php");
+include("objects/topic.php");
+include("objects/reply.php");
+
+$email = $_SESSION["cater_40105701"];
+
+$db = Database::getInstance();
+$mysqli = $db->getConnection();
+
+$user = new User($mysqli);
+$login = new Login($mysqli);
+
+$stmt = $user->readUser($email);	
 ?>
 <!DOCTYPE html>
 <html>
@@ -56,7 +58,7 @@
 			<?php echo"<a href='index.php' class='logo'>
 			<img src='../img/bird-bluetit.png' width='50px'></a>
 			<a href='index.php' class='button'>McG VLE</a>
-			<a href='displayprofile.php?userid=$userid' class='button' id='userbutton'>$userfirst $userlast</a>
+			<a href='displayprofile.php?userid=$user->id' class='button' id='userbutton'>$user->first_name $user->last_name</a>
                         <span>|</span>
                         <a href='signout.php' class='button'>Sign Out</a>";?>
 		</header>
@@ -67,11 +69,11 @@
 				<label for="drawer-control" class="drawer-close"></label>
 				<ul>
 					<li><h4>Navigation</h4></li>
-					<?php echo"<li><a href='displayprofile.php?userid=$userid' class='button'>$userfirst $userlast</a></li>
+					<?php echo"<li><a href='displayprofile.php?userid=$user->id' class='button'>$user->first_name $user->last_name</a></li>
 					<li><a href='index.php' class='button'>Home</a></li>";?>
 					<li><a href="subjectsearch.php" class="button">Subjects</a></li>
 					<li><a href="staffsearch.php" class="button">Staff</a></li>
-                                        <?php if($usertype == 1){echo"<li><a href='admin/index.php' class='button'>Admin Portal</a></li>";}?>
+                                        <?php if($user->type == 1){echo"<li><a href='admin/index.php' class='button'>Admin Portal</a></li>";}?>
 					<li><a href="signout.php" class="button" id="signout">Sign Out</a></li>
 				</ul>
 			</nav>
@@ -79,39 +81,41 @@
 				<?php
 					$topicid = $_GET['topicid'];
 					//echo "<h2>$topicid</h2>";
-					
-					$subjectquery = "SELECT SubjectName, SubjectCode FROM 7062prosubject INNER JOIN 7062protopic ON 7062prosubject.SubjectID=7062protopic.Subject_ID WHERE TopicID = $topicid";
-					$display = mysqli_query($conn, $subjectquery);
-					if(mysqli_num_rows($display) > 0) {
-						while ($row = mysqli_fetch_assoc($display)) {
-							$subject = $row["SubjectName"];
-							$code = $row["SubjectCode"];
-							echo "<h2>$code | $subject Forum</h2><br>";
+                                        
+                                        $subject = new Subject($mysqli);
+                                        $result = $subject->readSubjectTopic($topicid);
+
+					if($result->num_rows > 0) {
+						while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+							$subject->name = $row["SubjectName"];
+							$subject->code = $row["SubjectCode"];
+							echo "<h2>$subject->code | $subject->name Forum</h2><br>";
 						}
 					
 					
-					$query = "SELECT * FROM 7062protopic INNER JOIN 7062prouser ON 7062protopic.TopicBy_ID=7062prouser.UserID WHERE TopicID = $topicid";
-					$display = mysqli_query($conn, $query);
-					if(mysqli_num_rows($display) > 0) {
-						while ($row = mysqli_fetch_assoc($display)) {
-							$topicid = $row["TopicID"];
-							$topictitle = $row["TopicTitle"];
-							$topiccontent = $row["TopicContent"];
-							$createdate = date('d/m/y', strtotime($row["TopicDate"]));
-							$topicbyf = $row["FirstName"];
-							$topicbyl = $row["LastName"];
-							$subjectid = $row["Subject_ID"];
+                                        $topic = new Topic ($mysqli);
+                                        $topic_user = new User($mysqli);
+                                        $topic_result = $topic->readTopic($topicid);
+					if($topic_result->num_rows > 0) {
+						while ($row = $topic_result->fetch_array(MYSQLI_ASSOC)) {
+							$topic->id = $row["TopicID"];
+							$topic->title = $row["TopicTitle"];
+							$topic->content = $row["TopicContent"];
+							$topic->date = date('d/m/y', strtotime($row["TopicDate"]));
+							$topic_user->first_name = $row["FirstName"];
+							$topic_user->last_name = $row["LastName"];
+							$topic->topic_by_id = $row["Subject_ID"];
 							
 							echo "<div class='col-sm-12 col-md-9' id='topiccard'>
 									<div class='card fluid'>
 										<div class='section'>
 											<div class='col-sm-12 col-md-3'>
-												<p>$topicbyf $topicbyl</p>
-												<p>Created $createdate</p>
+												<p>$topic_user->first_name $topic_user->last_name</p>
+												<p>Created $topic->date</p>
 											</div>
 											<div class='col-sm-12 col-md-9'>
-												<h3>$topictitle</h3>
-												<p>$topiccontent</p>
+												<h3>$topic->title</h3>
+												<p>$topic->content</p>
 											</div>
 										</div>
 									</div>
@@ -119,32 +123,32 @@
 							
 						}
 					 
-						$reply = "SELECT * FROM 7062proreply INNER JOIN 7062prouser ON 7062proreply.ReplyBy_ID=7062prouser.UserID WHERE ReplyTopic_ID = $topicid";
-						$displayreply = mysqli_query($conn, $reply);
-						if(mysqli_num_rows($displayreply) > 0) {
-							while ($row = mysqli_fetch_assoc($displayreply)) {
-								$replycontent = $row["ReplyContent"];
-								$replydate = $row["ReplyDate"];
-								$displaydate = date('d/m/y H:i', strtotime($replydate));
-								$replybyf = $row["FirstName"];
-								$replybyl = $row["LastName"];
-								$usertype = $row["UserType_ID"];
+                                                $reply = new Reply($mysqli);
+                                                $reply_user = new User($mysqli);
+                                                $reply_result = $reply->readReply($topicid);
+						if($reply_result->num_rows > 0) {
+							while ($row = $reply_result->fetch_array(MYSQLI_ASSOC)) {
+								$reply->content = $row["ReplyContent"];
+								$reply->date = date('d/m/y H:i', strtotime($row["ReplyDate"]));
+								$reply_user->first_name = $row["FirstName"];
+								$reply_user->last_name = $row["LastName"];
+								$reply_user->type = $row["UserType_ID"];
 								
 								echo "<div class='col-sm-12' id='reply'>
 										<div class='card fluid' id='replycard'>
 											<div class='section'>
 												<div class='col-sm-12 col-md-3'>
-													<p>$replybyf $replybyl, ";
+													<p>$reply_user->first_name $reply_user->last_name, ";
 													
-													if($usertype == 2){
+													if($reply_user->type == 2){
 														echo "<b>Tutor</b>";
 													}
 													
 												echo "</p>
-													<p>$displaydate</p>
+													<p>$reply->date</p>
 												</div>
 												<div class='col-sm-12 col-sm-9'>
-													<p>$replycontent</p>
+													<p>$reply->content</p>
 												</div>
 											</div>
 										</div>
@@ -164,8 +168,8 @@
 												<textarea class='reply-box' value='' name='reply' required='required' style='width:95%;height:250px'></textarea>
 											</div>
 											<div class='hide-form'>
-												<input type='number' name='topic' class='hidden' value='$topicid' id='hideform'>
-												<input type='number' name='user' class='hidden' value='$userid' id='hideform'>
+												<input type='number' name='topic' class='hidden' value='$topic->id' id='hideform'>
+												<input type='number' name='user' class='hidden' value='$user->id' id='hideform'>
 											</div>
 											<div class='row'>		
 												<input type='submit' class='primary' value='Reply'>
@@ -176,7 +180,7 @@
 							<br>";
 					
 						echo "<div class='row' id='nav'>
-								<a href='forum.php?subject=$code'><button class='inverse' id='button-right'>Back</button></a>
+								<a href='forum.php?subject=$subject->code'><button class='inverse' id='button-right'>Back</button></a>
 							</div>
 							<br>";
 					}
@@ -192,6 +196,3 @@
 		</footer>	
 	</body>
 </html>
-<?php 
-	mysqli_close($conn);
-?>

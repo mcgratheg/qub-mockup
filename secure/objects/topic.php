@@ -16,7 +16,16 @@ class Topic {
         $this->connection = $mysqli;
     }
     
-    public function read() {
+    public function readTopic($id) {
+        $query = "SELECT * FROM 7062protopic INNER JOIN 7062prouser ON 7062protopic.TopicBy_ID=7062prouser.UserID WHERE TopicID = ?";
+        $stmt = $this->connection->prepare($query);
+        $stmt->bind_param('i', $id);
+        
+        if($stmt->execute()) {
+            $result = $stmt->get_result();
+        }
+        
+        return $result;    
         
     }
     

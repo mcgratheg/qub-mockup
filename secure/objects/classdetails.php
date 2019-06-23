@@ -25,6 +25,19 @@ class ClassDetails {
 
         return $result;
     }
+    
+    public function readClassDetails($userid) {
+        $query = "SELECT UserID FROM 7062prouser INNER JOIN 7062proclassdetails ON 7062prouser.UserID=7062proclassdetails.User_ID WHERE UserID=?";
+
+        $stmt = $this->connection->prepare($query);
+        $stmt->bind_param('i', $userid);
+
+        if ($stmt->execute()) {
+            $result = $stmt->get_result();
+        }
+
+        return $result;
+    }    
 
     public function create() {
         
