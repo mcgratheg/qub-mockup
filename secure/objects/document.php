@@ -16,7 +16,7 @@ class Document {
         $this->connection = $mysqli;
     }
     
-    public function readDocument($code) {
+    function readDocument($code) {
         $query = "SELECT * FROM 7062prodocument INNER JOIN 7062prosubject ON 7062prodocument.Subject_ID=7062prosubject.SubjectID INNER JOIN 7062prouser ON
 				7062prodocument.User_ID=7062prouser.UserID WHERE SubjectCode=? ORDER BY DateAdded DESC";
         $stmt = $this->connection->prepare($query);
@@ -30,15 +30,15 @@ class Document {
         
     }
     
-    public function create() {
+    function create() {
         
     }
     
-    public function update() {
+    function update() {
         
     }
     
-    public function delete() {
+    function delete() {
         
     }
 }

@@ -7,19 +7,19 @@
 		
 	}
 	
-	
-	include("connect/conn.php");
-	
-	$email = $_SESSION["cater_40105701"];
-	$userquery = "SELECT * FROM 7062prouser INNER JOIN 7062prologindetails ON 7062prouser.UserID=7062prologindetails.User_ID WHERE 7062prologindetails.Email='$email'";
-	$result = mysqli_query($conn, $userquery) or die(mysqli_error($conn));
-	
-	$row=mysqli_fetch_assoc($result);
-	
-	$userid = $row["UserID"];
-	$userfirst = $row["FirstName"];
-	$userlast = $row["LastName"];
-	$usertype = $row["UserType_ID"];
+include("connect/database.php");
+include("objects/user.php");
+include("objects/login.php");
+
+$email = $_SESSION["cater_40105701"];
+
+$db = Database::getInstance();
+$mysqli = $db->getConnection();
+
+$user = new User($mysqli);
+$login = new Login($mysqli);
+
+$stmt = $user->readUser($email);
 	
 	
 ?>
@@ -56,7 +56,7 @@
 			<?php echo"<a href='index.php' class='logo'>
 			<img src='../img/bird-bluetit.png' width='50px'></a>
 			<a href='index.php' class='button'>McG VLE</a>
-			<a href='displayprofile.php?userid=$userid' class='button' id='userbutton'>$userfirst $userlast</a>
+			<a href='displayprofile.php?userid=$user->id' class='button' id='userbutton'>$user->first_name $user->last_name</a>
                         <span>|</span>
                         <a href='signout.php' class='button'>Sign Out</a>";?>
 		</header>
@@ -67,11 +67,11 @@
 				<label for="drawer-control" class="drawer-close"></label>
 				<ul>
 					<li><h4>Navigation</h4></li>
-					<?php echo"<li><a href='displayprofile.php?userid=$userid' class='button'>$userfirst $userlast</a></li>
+					<?php echo"<li><a href='displayprofile.php?userid=$user->id' class='button'>$user->first_name $user->last_name</a></li>
 					<li><a href='index.php' class='button'>Home</a></li>";?>
 					<li><a href="subjectsearch.php" class="button">Subjects</a></li>
 					<li><a href="staffsearch.php" class="button">Staff</a></li>
-                                        <?php if($usertype == 1){ echo"<li><a href='admin/index.php' class='button'>Admin Portal</a></li>";}?>
+                                        <?php if($user->type == 1){ echo"<li><a href='admin/index.php' class='button'>Admin Portal</a></li>";}?>
 					<li><a href="signout.php" class="button" id="signout">Sign Out</a></li>
 				</ul>
 			</nav>
@@ -81,24 +81,24 @@
 			 <input type="text" id="myInput" placeholder="Search for staff...">
 			 <br><br>
 			<?php 
-				$query = "SELECT UserID, FirstName, LastName, ProfileImage FROM 7062prouser WHERE UserType_ID=2 ORDER BY LastName ASC";
-				$result = mysqli_query($conn, $query) or die(mysqli_error($conn));
-				if(mysqli_num_rows($result) > 0) {
-					while($row=mysqli_fetch_assoc($result)) {
-						$id=$row["UserID"];
-						$firstname=$row["FirstName"];
-						$lastname=$row["LastName"];
-						$image=$row["ProfileImage"];
+				$staff = new User($mysqli);
+                                $result = $staff->readTutor();
+				if($result->num_rows > 0) {
+					while($row= $result->fetch_array(MYSQLI_ASSOC)) {
+						$staff->id=$row["UserID"];
+						$staff->first_name=$row["FirstName"];
+						$staff->last_name=$row["LastName"];
+						$staff->profile_image=$row["ProfileImage"];
 						
 						echo "<div class='col-sm-12 col-md-7'>
 									<div class='card fluid'>
 										<div class='section'>
 											<div class='row'>
 												<div class='col-sm-12 col-md-2' id='profileimage'>
-													<img src='../img/$image' width='120px'>
+													<img src='../img/$staff->profile_image' width='120px'>
 												</div>
 												<div class='col-sm-12 col-md'>
-													<h4 class='search'><a href='displaystaff.php?id=$id'>$firstname $lastname</a></h4>
+													<h4 class='search'><a href='displaystaff.php?id=$staff->id'>$staff->first_name $staff->last_name</a></h4>
 												</div>	
 											</div>
 										</div>
@@ -116,7 +116,4 @@
 			<p> 40105701 | CSC7062 Web Development Project</p>
 		</footer>	
 	</body>
-</html>
-<?php
-	mysqli_close($conn);
-?>	
+</html>	

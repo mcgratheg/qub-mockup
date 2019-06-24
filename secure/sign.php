@@ -2,23 +2,26 @@
 
 session_start();
 
-include("connect/conn.php");
+include("connect/database.php");
+include("objects/user.php");
+include("objects/login.php");
 
-$email = mysqli_real_escape_string($conn,trim($_POST["email"]));
+$db = Database::getInstance();
+$mysqli = $db->getConnection();
 
-$pass = mysqli_real_escape_string($conn,trim($_POST["password"]));
+$user = new User($mysqli);
+$login = new Login($mysqli);
 
+$email = $mysqli->real_escape_string(trim($_POST["email"]));
 
-$checkuser = "SELECT * FROM 7062prologindetails WHERE Email='$email' and Password=MD5('$pass') and Email LIKE '%qub.ac.uk'";
+$pass = $mysqli->real_escape_string(trim($_POST["password"]));
 
-$userresult = mysqli_query($conn, $checkuser) or die(mysqli_error($conn));
+$result = $login->readCheckUser($email, $pass);
 
-mysqli_close($conn);
-
-if(mysqli_num_rows($userresult) == 1){
+if($result->num_rows == 1){
 	
 	$_SESSION["cater_40105701"]= $email;
-	while($row= mysqli_fetch_assoc($userresult)) {
+	while($row= $result->fetch_array(MYSQLI_ASSOC)) {
 		if($row["UserType_ID"] == 1) {
 			$_SESSION["isAdmin"] = true;
 		} else {

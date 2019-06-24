@@ -12,19 +12,19 @@ class UserType {
         $this->connection = $mysqli;
     }
     
-    public function read() {
+    function read() {
         
     }
     
-    public function create() {
+    function create() {
         
     }
     
-    public function update() {
+    function update() {
         
     }
     
-    public function delete() {
+    function delete() {
         
     }
 }

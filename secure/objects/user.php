@@ -78,6 +78,17 @@ class User {
         }
     }
     
+    function readTutor() {
+        $query = "SELECT UserID, FirstName, LastName, ProfileImage FROM 7062prouser WHERE UserType_ID=2 ORDER BY LastName ASC";
+        $stmt = $this->connection->prepare($query);
+        
+        if($stmt->execute()) {
+            $result = $stmt->get_result();
+        }
+        
+        return $result;
+    }
+    
     function create() {
         
         $query = "INSERT INTO 7062prouser (UserType_ID, FirstName, LastName, DateOfBirth, Address, City, PostCode, HomeNumber, MobileNumber) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";

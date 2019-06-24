@@ -14,7 +14,7 @@ class Tutor {
         $this->connection = $mysqli;
     }
 
-    public function readTutor($userid) {
+    function readTutor($userid) {
         $query = "SELECT RoomNumber, RoomAddress, PhoneExtension FROM 7062protutordetails WHERE User_ID=?";
 
         $stmt = $this->connection->prepare($query);
@@ -33,7 +33,7 @@ class Tutor {
         }
     }
 
-    public function searchTutor($userid) {
+    function searchTutor($userid) {
         $query = "SELECT FirstName, LastName, ProfileImage, Email, RoomNumber, RoomAddress, PhoneExtension FROM 7062prouser INNER JOIN 7062prologindetails ON 
 					7062prouser.UserID=7062prologindetails.User_ID INNER JOIN 7062protutordetails ON 7062prouser.UserID=7062protutordetails.User_ID WHERE 7062prouser.UserID=?";
 
@@ -47,15 +47,15 @@ class Tutor {
         return $result;
     }
 
-    public function create() {
+    function create() {
         
     }
 
-    public function update() {
+    function update() {
         
     }
 
-    public function delete() {
+    function delete() {
         
     }
 

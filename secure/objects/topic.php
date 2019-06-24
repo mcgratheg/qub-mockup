@@ -16,7 +16,7 @@ class Topic {
         $this->connection = $mysqli;
     }
     
-    public function readTopic($id) {
+    function readTopic($id) {
         $query = "SELECT * FROM 7062protopic INNER JOIN 7062prouser ON 7062protopic.TopicBy_ID=7062prouser.UserID WHERE TopicID = ?";
         $stmt = $this->connection->prepare($query);
         $stmt->bind_param('i', $id);
@@ -29,15 +29,37 @@ class Topic {
         
     }
     
-    public function create() {
+    function readTopicSubject($code) {
+        $query = "SELECT * FROM 7062protopic INNER JOIN 7062prouser ON 7062protopic.TopicBy_ID=7062prouser.UserID INNER JOIN 7062prosubject ON
+						7062protopic.Subject_ID=7062prosubject.SubjectID WHERE 7062prosubject.SubjectCode = ?";
+        $stmt = $this->connection->prepare($query);
+        $stmt->bind_param('s', $code);
+        
+        if($stmt->execute()) {
+            $result = $stmt->get_result();
+        }
+        
+        return $result;    
+        
+    }    
+    
+    function create() {
         
     }
     
-    public function update() {
+    function update($topic_title, $topic_content, $subject_id, $user_id) {
+        $query = "INSERT INTO 7062protopic (TopicTitle, TopicContent, Subject_ID, TopicBy_ID) VALUES (?,?,?,?)";
+        $stmt = $this->connection->prepare($query);
+        $stmt->bind_param('ssii', $topic_title, $topic_content, $subject_id, $user_id);
         
+        if ($stmt->execute()) {
+            $result = $stmt->get_result();
+        }
+        
+        $stmt->close();        
     }
     
-    public function delete() {
+    function delete() {
         
     }
 }

@@ -7,21 +7,22 @@
 		
 	}
 	
-	
-	include("connect/conn.php");
-	
-	$email = $_SESSION["cater_40105701"];
-	$userquery = "SELECT * FROM 7062prouser INNER JOIN 7062prologindetails ON 7062prouser.UserID=7062prologindetails.User_ID WHERE 7062prologindetails.Email='$email'";
-	$result = mysqli_query($conn, $userquery) or die(mysqli_error($conn));
-	
-	$row=mysqli_fetch_assoc($result);
-	
-	$userid = $row["UserID"];
-	$userfirst = $row["FirstName"];
-	$userlast = $row["LastName"];
-	$usertype = $row["UserType_ID"];
 
-	
+include("connect/database.php");
+include("objects/user.php");
+include("objects/login.php");
+include("objects/subject.php");
+include("objects/classdetails.php");
+
+$email = $_SESSION["cater_40105701"];
+
+$db = Database::getInstance();
+$mysqli = $db->getConnection();
+
+$user = new User($mysqli);
+$login = new Login($mysqli);
+
+$stmt = $user->readUser($email);
 	
 ?>
 <!DOCTYPE html>
@@ -51,7 +52,7 @@
 			<?php echo"<a href='index.php' class='logo'>
 			<img src='../img/bird-bluetit.png' width='50px'></a>
 			<a href='index.php' class='button'>McG VLE</a>
-			<a href='displayprofile.php?userid=$userid' class='button' id='userbutton'>$userfirst $userlast</a>
+			<a href='displayprofile.php?userid=$user->id' class='button' id='userbutton'>$user->first_name $user->last_name</a>
                         <span>|</span>
                         <a href='signout.php' class='button'>Sign Out</a>";?>
 		</header>
@@ -62,12 +63,12 @@
 				<label for="drawer-control" class="drawer-close"></label>
 				<ul>
 					<li><h4>Navigation</h4></li>
-					<?php echo"<li><a href='displayprofile.php?userid=$userid' class='button'>$userfirst $userlast</a></li>
+					<?php echo"<li><a href='displayprofile.php?userid=$user->id' class='button'>$user->first_name $user->last_name</a></li>
 					<li><a href='index.php' class='button'>Home</a></li>";?>
 					<li><a href="subjectsearch.php" class="button">Subjects</a></li>
 					<li><a href="staffsearch.php" class="button">Staff</a></li>
 					<?php 
-                                            if($usertype == 1) {
+                                            if($user->type == 1) {
                                                 echo"<li><a href='admin/index.php' class='button'>Admin Portal</a></li>";
                                             }
                                         ?>
@@ -78,31 +79,31 @@
 			<div class="col-sm-12 col-md-8 col-lg-10" id="main">
 			<?php 
 				echo "<div class='row' id='titlehead'>
-						<h3>Hi, $userfirst!</h3>";
+						<h3>Hi, $user->first_name!</h3>";
 				echo "</div><br><br>";		
 				
-				if($usertype!=1){
-				$subjectquery = "SELECT SubjectCode, SubjectName FROM 7062prosubject INNER JOIN 7062proclassdetails ON
-				7062prosubject.SubjectID=7062proclassdetails.Subject_ID WHERE 7062proclassdetails.User_ID=$userid";
-				$subjectresult = mysqli_query($conn, $subjectquery) or die(mysqli_error($conn));
+				if($user->type!=1){
+                                $subject = new Subject($mysqli);
+                                $class_details = new ClassDetails($mysqli);
+				$class_details_result = $class_details->readTutorDetails($user->id);
 				
-				if(mysqli_num_rows($subjectresult) > 0){
+				if($class_details_result->num_rows > 0){
 					
-					while($row = mysqli_fetch_assoc($subjectresult)){
-						$code = $row["SubjectCode"];
-						$subjectname = $row["SubjectName"];
+					while($row = $class_details_result->fetch_array(MYSQLI_ASSOC)){
+						$subject->code = $row["SubjectCode"];
+						$subject->name = $row["SubjectName"];
 						
 						echo "<div class='col-sm-12 col-md-7'>
 									<div class='card fluid' id='subject'>
 										<div class='section'>
 											<div class='row'>
-												<a href='displaysubject.php?subject=$code'><h3>$code : $subjectname</h3></a>
+												<a href='displaysubject.php?subject=$subject->code'><h3>$code : $subject->name</h3></a>
 											</div>	
 											<br>
 											<div class='row'>
-											<p><a href='forum.php?subject=$code'>Discussion</a></p>
+											<p><a href='forum.php?subject=$subject->code'>Discussion</a></p>
 											<span>|</span>
-											<p><a href='documents.php?subject=$code'>Resources</a></p>
+											<p><a href='documents.php?subject=$subject->code'>Resources</a></p>
 											</div>
 										</div>
 									</div>
@@ -125,6 +126,3 @@
 		</footer>	
 	</body>
 </html>
-<?php
-	mysqli_close($conn);
-?>

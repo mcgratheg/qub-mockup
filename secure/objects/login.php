@@ -14,20 +14,18 @@ class Login {
         $this->connection = $mysqli;
     }
     
-    function readEmail($email) {
+    function readCheckUser($email, $password) {
         
-        $query = "SELECT Email FROM 7062prologindetails WHERE Email = ?";
+        $query = "SELECT * FROM 7062prologindetails WHERE Email= ? and Password=MD5(?) and Email LIKE '%qub.ac.uk'";
         
         $stmt = $this->connection->prepare($query);
-        $stmt->bind_param('s', $email);
+        $stmt->bind_param('ss', $email, $password);
         
         if($stmt->execute()) {
             $result = $stmt->get_result();
         }
         
-        while($row = $result->fetch_array(MYSQLI_ASSOC)) {
-            $this->email = $row['Email'];
-        }
+        return $result;
         
         
     }

@@ -12,7 +12,7 @@ class ClassDetails {
         $this->connection = $mysqli;
     }
 
-    public function readTutorDetails($userid) {
+    function readTutorDetails($userid) {
         $query = "SELECT SubjectName, SubjectCode FROM 7062prosubject INNER JOIN 7062proclassdetails ON 7062prosubject.SubjectID=7062proclassdetails.Subject_ID
 		INNER JOIN 7062prouser ON 7062proclassdetails.User_ID=7062prouser.UserID WHERE 7062prouser.UserID=?";
 
@@ -26,7 +26,7 @@ class ClassDetails {
         return $result;
     }
     
-    public function readClassDetails($userid) {
+    function readClassDetails($userid) {
         $query = "SELECT UserID FROM 7062prouser INNER JOIN 7062proclassdetails ON 7062prouser.UserID=7062proclassdetails.User_ID WHERE UserID=?";
 
         $stmt = $this->connection->prepare($query);
@@ -39,15 +39,15 @@ class ClassDetails {
         return $result;
     }    
 
-    public function create() {
+    function create() {
         
     }
 
-    public function update() {
+    function update() {
         
     }
 
-    public function delete() {
+    function delete() {
         
     }
 
