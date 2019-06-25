@@ -7,69 +7,23 @@
 		
 	}
 	
-	include("connect/conn.php");
-	
-	$email = $_SESSION["cater_40105701"];
-	$userquery = "SELECT * FROM 7062prouser INNER JOIN 7062prologindetails ON 7062prouser.UserID=7062prologindetails.User_ID WHERE 7062prologindetails.Email='$email'";
-	$result = mysqli_query($conn, $userquery) or die(mysqli_error($conn));
-	
-	$row=mysqli_fetch_assoc($result);
-	
-	$userid = $row["UserID"];
-	$userfirst = $row["FirstName"];
-	$userlast = $row["LastName"];
-	$usertype = $row["UserType_ID"];
-	
-	$userupdate = $_POST["user"];
-	$target_dir = "../img/";
-	$target_file = $target_dir . basename($_FILES["profileimg"]["name"]);
-	$updateimg = basename($_FILES["profileimg"]["name"]);
-	$uploadOk = 1;
-	$msg = "";
-	$imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
-	// Check if image file is a actual image or fake image
-		if(isset($_POST["submit"])) {
-			$check = getimagesize($_FILES["profileimg"]["tmp_name"]);
-			if($check !== false) {
-			$errmsg = "File is an image - " . $check["mime"] . ".";
-			$uploadOk = 1;
-			} else {
-				$errmsg = "File is not an image.";
-				$uploadOk = 0;
-			}
-		}
-	// Check if file already exists
-	if (file_exists($target_file)) {
-		$errmsg = "Sorry, file already exists.";
-		$uploadOk = 0;
-	}
-	// Check file size
-	if ($_FILES["profileimg"]["size"] > 2097152) {
-		$errmsg = "Sorry, your file is too large.";
-		$uploadOk = 0;
-	}
-	// Allow certain file formats
-	if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" ) {
-		$errmsg = "Sorry, only JPG, JPEG, PNG files are allowed.";
-		$uploadOk = 0;
-	}
-	// Check if $uploadOk is set to 0 by an error
-	if ($uploadOk == 0) {
-		$msg = "Sorry, your file was not uploaded.";
-	// if everything is ok, try to upload file
-	} else {
-		if (move_uploaded_file($_FILES["profileimg"]["tmp_name"], $target_file)) {
-			$msg = "The file ". basename( $_FILES["profileimg"]["name"]). " has been uploaded.";
-			
-		$imageupdate = "UPDATE `7062prouser` SET `ProfileImage`='$updateimg' WHERE `UserID`=$userupdate";
-		$imageresult = mysqli_query($conn, $imageupdate) or die(mysqli_error($conn));
-			
-		} else {
-			$msg = "Sorry, there was an error uploading your file.";
-		}
-	}
+include("connect/database.php");
+include("objects/user.php");
+include("objects/login.php");
 
-		
+$email = $_SESSION["cater_40105701"];
+
+$db = Database::getInstance();
+$mysqli = $db->getConnection();
+
+$user = new User($mysqli);
+$login = new Login($mysqli);
+
+$stmt = $user->readUser($email);
+	
+$user_id = $_POST["user"];
+$user_update = new User($mysqli);
+$msg = $user_update->updateProfileImage($user_id);
 	
 ?>
 <!DOCTYPE html>
@@ -99,7 +53,7 @@
 			<?php echo"<a href='index.php' class='logo'>
 			<img src='../img/bird-bluetit.png' width='50px'></a>
 			<a href='index.php' class='button'>McG VLE</a>
-			<a href='displayprofile.php?userid=$userid' class='button' id='userbutton'>$userfirst $userlast</a>
+			<a href='displayprofile.php?userid=$user->id' class='button' id='userbutton'>$user->first_name $user->last_name</a>
                         <span>|</span>
                         <a href='signout.php' class='button'>Sign Out</a>";?>
 		</header>
@@ -110,11 +64,11 @@
 				<label for="drawer-control" class="drawer-close"></label>
 				<ul>
 					<li><h4>Navigation</h4></li>
-					<?php echo"<li><a href='displayprofile.php?userid=$userid' class='button'>$userfirst $userlast</a></li>
+					<?php echo"<li><a href='displayprofile.php?userid=$user->id' class='button'>$user->first_name $user->last_name</a></li>
 					<li><a href='index.php' class='button'>Home</a></li>";?>
 					<li><a href="subjectsearch.php" class="button">Subjects</a></li>
 					<li><a href="staffsearch.php" class="button">Staff</a></li>
-                                        <?php if($usertype == 1){ echo"<li><a href='admin/index.php' class='button'>Admin Portal</a></li>";}?>
+                                        <?php if($user->type == 1){ echo"<li><a href='admin/index.php' class='button'>Admin Portal</a></li>";}?>
 					<li><a href="signout.php" class="button" id="signout">Sign Out</a></li>
 				</ul>
 			</nav>
@@ -129,11 +83,11 @@
 				</div>";
 			} else {		
 			echo "<div>		
-					<p>$errmsg</p>
+					<p>$msg</p>
 				</div>";
 			}
 			echo "<div class='row' id='nav'>
-					<a href='displayprofile.php?userid=$userupdate'><button class='inverse'>Back</button></a>
+					<a href='displayprofile.php?userid=$user_id'><button class='inverse'>Back</button></a>
 				</div>";	
 			
 			?>
@@ -147,7 +101,4 @@
 			<p> 40105701 | CSC7062 Web Development Project</p>
 		</footer>	
 	</body>
-</html>
-<?php
-	mysqli_close($conn);
-?>	
+</html>	

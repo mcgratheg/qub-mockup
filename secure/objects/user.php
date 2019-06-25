@@ -105,16 +105,74 @@ class User {
         $stmt->close();
     }
     
-    function update($userid) {
+    function update($update_first, $update_last, $update_dob, $update_address, $update_city, $update_postcode, $update_home, $update_mobile, $user_id) {
         
-        $query = "UPDATE 7062prouser SET UserType_ID=?, FirstName=?, LastName=?, DateOfBirth=?, Address=?, City=?, PostCode=?, HomeNumber=?, MobileNumber=? WHERE UserID=?";
+        $query = "UPDATE 7062prouser SET FirstName=?, LastName=?, DateOfBirth=?, Address=?, City=?, PostCode=?, HomeNumber=?, MobileNumber=? WHERE UserID=?";
         
         $stmt = $this->connection->prepare($query);
-        $stmt->bind_param('isssssi', $this->type, $this->first_name, $this->last_name, $this->date_of_birth, $this->address, $this->city, $this->postcode, $this->home_number, $this->mobile_number, $userid);
+        $stmt->bind_param('ssssssssi', $update_first, $update_last, $update_dob, $update_address, $update_city, $update_postcode, $update_home, $update_mobile, $user_id);
         $stmt->execute();
         
         $stmt->close();
     }
+    
+    function updateProfileImage($user_id) {
+        $target_dir = "../../img/";
+	$target_file = $target_dir . basename($_FILES["profileimg"]["name"]);
+	$updateimg = basename($_FILES["profileimg"]["name"]);
+	$uploadOk = 1;
+	$msg = "";
+	$imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+	// Check if image file is a actual image or fake image
+		if(isset($_POST["submit"])) {
+			$check = getimagesize($_FILES["profileimg"]["tmp_name"]);
+			if($check !== false) {
+			$msg = "File is an image - " . $check["mime"] . ".";
+			$uploadOk = 1;
+			} else {
+				$msg = "File is not an image.";
+				$uploadOk = 0;
+			}
+		}
+	// Check if file already exists
+	if (file_exists($target_file)) {
+		$msg = "Sorry, file already exists.";
+		$uploadOk = 0;
+	}
+	// Check file size
+	if ($_FILES["profileimg"]["size"] > 2097152) {
+		$msg = "Sorry, your file is too large.";
+		$uploadOk = 0;
+	}
+	// Allow certain file formats
+	if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" ) {
+		$msg = "Sorry, only JPG, JPEG, PNG files are allowed.";
+		$uploadOk = 0;
+	}
+	// Check if $uploadOk is set to 0 by an error
+	if ($uploadOk == 0) {
+		$msg = "Sorry, your file was not uploaded.";
+	// if everything is ok, try to upload file
+	} else {
+		if (move_uploaded_file($_FILES["profileimg"]["tmp_name"], $target_file)) {
+			$msg = "The file ". basename( $_FILES["profileimg"]["name"]). " has been uploaded.";
+			
+		$query = "UPDATE `7062prouser` SET `ProfileImage`= ? WHERE `UserID`= ?";
+                $stmt = $this->connection->prepare($query);
+                $stmt->bind_param('si', $updateimg, $user_id);
+		
+                if($stmt->execute()) {
+                    $result = $stmt->get_result();
+                }
+			
+		} else {
+			$msg = "Sorry, there was an error uploading your file.";
+		}
+	}
+
+        return $msg;
+       
+    }  
     
     function delete($userid) {
         
