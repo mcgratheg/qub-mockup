@@ -41,11 +41,7 @@ class Reply {
         return $result;        
     }
     
-    function  create() {
-        
-    }
-    
-    function update($user_id, $topic_id, $reply_content) {
+    function create($user_id, $topic_id, $reply_content) {
         $query = "INSERT INTO 7062proreply (ReplyBy_ID, ReplyTopic_ID, ReplyContent) VALUES (?,?,?)";
         $stmt = $this->connection->prepare($query);
         $stmt->bind_param('iis', $user_id, $topic_id, $reply_content);
@@ -55,6 +51,10 @@ class Reply {
         }
         
         $stmt->close();
+    }
+    
+    function update() {
+        
     }
     
     function delete() {

@@ -39,7 +39,19 @@ class Subject {
         
         return $result;
         
-    }    
+    }
+    
+    function readSubjectSearch() {
+        $query = "SELECT Level, SubjectCode, SubjectName FROM 7062prosubject INNER JOIN 7062prosubjectlevel ON 
+				7062prosubject.SubjectLevel_ID=7062prosubjectlevel.SubjectLevelID ORDER BY SubjectLevel_ID, SubjectCode ASC";
+        $stmt = $this->connection->prepare($query);        
+        if($stmt->execute()) {
+            $result = $stmt->get_result();
+        }
+        
+        return $result;
+        
+    }
     
     function create() {
         

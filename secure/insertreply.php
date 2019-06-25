@@ -26,7 +26,7 @@ $replytopic = $_POST["topic"];
 $replyuser = $_POST["user"];
 
 $reply = new Reply($mysqli);
-$result = $reply->update($replyuser, $replytopic, $replycontent);
+$result = $reply->create($replyuser, $replytopic, $replycontent);
 
 header("Location: displaytopic.php?topicid=$replytopic");
 ?>

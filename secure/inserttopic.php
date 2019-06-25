@@ -27,7 +27,7 @@ $subject_id = $_POST["subject"];
 $user_id = $_POST["user"];
 
 $topic = new Topic($mysqli);
-$result = $topic->update($topic_title, $topic_content, $subject_id, $user_id);
+$result = $topic->create($topic_title, $topic_content, $subject_id, $user_id);
 
 header("Location: forum.php?subjectid=$subject_id");
 ?>

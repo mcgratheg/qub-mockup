@@ -43,11 +43,7 @@ class Topic {
         
     }    
     
-    function create() {
-        
-    }
-    
-    function update($topic_title, $topic_content, $subject_id, $user_id) {
+    function create($topic_title, $topic_content, $subject_id, $user_id) {
         $query = "INSERT INTO 7062protopic (TopicTitle, TopicContent, Subject_ID, TopicBy_ID) VALUES (?,?,?,?)";
         $stmt = $this->connection->prepare($query);
         $stmt->bind_param('ssii', $topic_title, $topic_content, $subject_id, $user_id);
@@ -57,6 +53,10 @@ class Topic {
         }
         
         $stmt->close();        
+    }
+    
+    function update() {
+        
     }
     
     function delete() {
