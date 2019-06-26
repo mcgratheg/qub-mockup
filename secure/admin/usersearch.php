@@ -7,21 +7,22 @@
 		
 	}
 	
-	
-	include("../connect/conn.php");
-	
-	$email = $_SESSION["cater_40105701"];
-	$userquery = "SELECT * FROM 7062prouser INNER JOIN 7062prologindetails ON 7062prouser.UserID=7062prologindetails.User_ID WHERE 7062prologindetails.Email='$email'";
-	$result = mysqli_query($conn, $userquery) or die(mysqli_error($conn));
-	
-	$row=mysqli_fetch_assoc($result);
-	
-	$userid = $row["UserID"];
-	$userfirst = $row["FirstName"];
-	$userlast = $row["LastName"];
-	$usertype = $row["UserType_ID"];
-	
-	
+include("../connect/database.php");
+include("../objects/user.php");
+include("../objects/usertype.php");
+include("../objects/login.php");
+include("../objects/subject.php");
+
+$email = $_SESSION["cater_40105701"];
+
+$db = Database::getInstance();
+$mysqli = $db->getConnection();
+
+$user = new User($mysqli);
+$login = new Login($mysqli);
+
+$stmt = $user->readUser($email);
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -58,7 +59,7 @@
 			<?php echo"<a href='index.php' class='logo'>
 			<img src='../../img/bird-bluetit.png' width='50px'></a>
 			<a href='index.php' class='button'>McG VLE</a>
-			<a href='../displayprofile.php?userid=$userid' class='button' id='userbutton'>$userfirst $userlast</a>
+			<a href='../displayprofile.php?userid=$user->id' class='button' id='userbutton'>$user->first_name $user->last_name</a>
                         <span>|</span>
                         <a href='../signout.php' class='button'>Sign Out</a>";?>
 		</header>
@@ -69,7 +70,7 @@
 				<label for="drawer-control" class="drawer-close"></label>
 				<ul>
 					<li><h4>Navigation</h4></li>
-					<?php echo"<li><a href='../displayprofile.php?userid=$userid' class='button'>$userfirst $userlast</a></li>
+					<?php echo"<li><a href='../displayprofile.php?userid=$user->id' class='button'>$user->first_name $user->last_name</a></li>
 					<li><a href='index.php' class='button'>Home</a></li>";?>
 					<li><a href="../subjectsearch.php" class="button">Subjects</a></li>
 					<li><a href="../staffsearch.php" class="button">Staff</a></li>
@@ -86,10 +87,10 @@
 						<button class='primary' style='margin-left:20px;'><a href='adduser.php'>Add User</a></button>
 					</div><br>";
 					
-				$query = "SELECT UserID, Type, FirstName, LastName FROM 7062prouser INNER JOIN 7062prousertype ON 7062prouser.UserType_ID=7062prousertype.UserTypeID WHERE NOT UserType_ID=1
-				ORDER BY UserTypeID, LastName";
-				$result = mysqli_query($conn, $query) or die(mysqli_error($conn));
-				if(mysqli_num_rows($result) > 0) {
+				$user_seacrh = new User($mysqli);
+                                $user_type = new UserType($mysqli);
+				$result = $user_seacrh->read_user_search();
+				if($result->num_rows > 0) {
 					echo "<table>
 								<thead>
 									<tr>
@@ -100,17 +101,17 @@
 									</tr>	
 								</thead>
 								<tbody id='myTable'>";
-					while($row=mysqli_fetch_assoc($result)) {
-						$id = $row["UserID"];
-						$fname = $row["FirstName"];
-						$lname = $row["LastName"];
-						$type = $row["Type"];
+					while($row=$result->fetch_array(MYSQLI_ASSOC)) {
+						$user_seacrh->id = $row["UserID"];
+						$user_seacrh->first_name = $row["FirstName"];
+						$user_seacrh->last_name = $row["LastName"];
+						$user_type->name = $row["Type"];
 						
 							echo "<tr>
-									<td data-label='ID'><a href='displayuser.php?id=$id'>$id</a></td>
-									<td data-label='First Name'>$fname</td>
-									<td data-label='Last Name'>$lname</td>
-									<td data-label='User Type'>$type</td>
+									<td data-label='ID'><a href='displayuser.php?id=$user_seacrh->id'>$user_seacrh->id</a></td>
+									<td data-label='First Name'>$user_seacrh->first_name</td>
+									<td data-label='Last Name'>$user_seacrh->last_name</td>
+									<td data-label='User Type'>$user_type->name</td>
 								</tr>";	
 						
 					}
@@ -133,6 +134,3 @@
 		</footer>	
 	</body>
 </html>
-<?php
-	mysqli_close($conn);
-?>	

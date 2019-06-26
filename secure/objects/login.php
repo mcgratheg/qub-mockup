@@ -30,8 +30,19 @@ class Login {
         
     }
     
-    function create() {
+    function create($user_id, $user_email, $password) {
+        $query = "INSERT INTO 7062prologindetails (User_ID, Email, Password) VALUES (?, ?, ?)";
+        $stmt = $this->connection->prepare($query);
+        $password_hash = md5($password);
+        $stmt->bind_param('iss', $user_id, $user_email, $password_hash);
         
+        if($stmt->execute()) {
+            return true;
+        } else {
+            return false;
+        }
+        
+        $stmt->close();
     }
     
     function updatePassword($password_hash, $email) {

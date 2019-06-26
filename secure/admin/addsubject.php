@@ -6,20 +6,24 @@
 		header("Location: ../../login.php");
 		
 	}
-	
-	
-	include("../connect/conn.php");
-	
-	$email = $_SESSION["cater_40105701"];
-	$userquery = "SELECT * FROM 7062prouser INNER JOIN 7062prologindetails ON 7062prouser.UserID=7062prologindetails.User_ID WHERE 7062prologindetails.Email='$email'";
-	$result = mysqli_query($conn, $userquery);
-	
-	$row=mysqli_fetch_assoc($result);
-	
-	$userid = $row["UserID"];
-	$userfirst = $row["FirstName"];
-	$userlast = $row["LastName"];
-	$usertype = $row["UserType_ID"];
+
+include("../connect/database.php");
+include("../objects/user.php");
+include("../objects/login.php");
+include("../objects/subjectlevel.php");
+
+$email = $_SESSION["cater_40105701"];
+
+$db = Database::getInstance();
+$mysqli = $db->getConnection();
+
+$user = new User($mysqli);
+$login = new Login($mysqli);
+
+$stmt = $user->readUser($email);
+
+$subject_level = new SubjectLevel($mysqli);
+$subject_level_count = $subject_level->read_count();
 	
 ?>
 <!DOCTYPE html>
@@ -64,7 +68,7 @@
 			<?php echo"<a href='index.php' class='logo'>
 			<img src='../../img/bird-bluetit.png' width='50px'></a>
 			<a href='index.php' class='button'>McG VLE</a>
-			<a href='displayprofile.php?userid=$userid' class='button' id='userbutton'>$userfirst $userlast</a>
+			<a href='displayprofile.php?userid=$user->id' class='button' id='userbutton'>$user->first_name $user->last_name</a>
                         <span>|</span>
                         <a href='signout.php' class='button'>Sign Out</a>";?>
 		</header>
@@ -75,7 +79,7 @@
 				<label for="drawer-control" class="drawer-close"></label>
 				<ul>
 					<li><h4>Navigation</h4></li>
-					<?php echo"<li><a href='../displayprofile.php?userid=$userid' class='button'>$userfirst $userlast</a></li>
+					<?php echo"<li><a href='../displayprofile.php?userid=$user->id' class='button'>$user->first_name $user->last_name</a></li>
 					<li><a href='index.php' class='button'>Home</a></li>";?>
 					<li><a href="../subjectsearch.php" class="button">Subjects</a></li>
 					<li><a href="../staffsearch.php" class="button">Staff</a></li>
@@ -112,9 +116,12 @@
 									</div>
 									<div class="col-sm-12 col-md">
 										<select name="subjectlevel">
-											<option value="1" name="subjectlevel" required="required">Undergraduate</option>
-											<option value="2" name="subjectlevel" required="required">Postgraduate</option>
-											<option value="3" name="subjectlevel" required="required">PhD</option>
+                                                                                    <?php 
+                                                                                        for ($id = 1; $id <=$subject_level_count; $id++) {
+                                                                                            $level = $subject_level->read_level($id);
+                                                                                            echo "<option value='$id' name='subjectlevel' required='required'>$level</option>";
+                                                                                        }
+                                                                                    ?>            
 										</select>
 									</div>	
 								</div>

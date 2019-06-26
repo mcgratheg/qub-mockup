@@ -7,19 +7,21 @@
 		
 	}
 	
-	
-	include("../connect/conn.php");
-	
-	$email = $_SESSION["cater_40105701"];
-	$userquery = "SELECT * FROM 7062prouser INNER JOIN 7062prologindetails ON 7062prouser.UserID=7062prologindetails.User_ID WHERE 7062prologindetails.Email='$email'";
-	$result = mysqli_query($conn, $userquery);
-	
-	$row=mysqli_fetch_assoc($result);
-	
-	$userid = $row["UserID"];
-	$userfirst = $row["FirstName"];
-	$userlast = $row["LastName"];
-	$usertype = $row["UserType_ID"];
+include("../connect/database.php");
+include("../objects/user.php");
+include("../objects/usertype.php");
+include("../objects/login.php");
+include("../objects/subject.php");
+
+$email = $_SESSION["cater_40105701"];
+
+$db = Database::getInstance();
+$mysqli = $db->getConnection();
+
+$user = new User($mysqli);
+$login = new Login($mysqli);
+
+$stmt = $user->readUser($email);
 	
 ?>
 <!DOCTYPE html>
@@ -64,7 +66,7 @@
 			<?php echo"<a href='index.php' class='logo'>
 			<img src='../../img/bird-bluetit.png' width='50px'></a>
 			<a href='index.php' class='button'>McG VLE</a>
-			<a href='displayprofile.php?userid=$userid' class='button' id='userbutton'>$userfirst $userlast</a>
+			<a href='displayprofile.php?userid=$user->id' class='button' id='userbutton'>$user->first_name $user->last_name</a>
                         <span>|</span>
                         <a href='signout.php' class='button'>Sign Out</a>";?>
 		</header>
@@ -75,7 +77,7 @@
 				<label for="drawer-control" class="drawer-close"></label>
 				<ul>
 					<li><h4>Navigation</h4></li>
-					<?php echo"<li><a href='../displayprofile.php?userid=$userid' class='button'>$userfirst $userlast</a></li>
+					<?php echo"<li><a href='../displayprofile.php?userid=$user->id' class='button'>$user->first_name $user->last_name</a></li>
 					<li><a href='index.php' class='button'>Home</a></li>";?>
 					<li><a href="../subjectsearch.php" class="button">Subjects</a></li>
 					<li><a href="../staffsearch.php" class="button">Staff</a></li>
@@ -86,14 +88,14 @@
 			<?php
 					$code = $_GET["subject"];
 					
-					$query = "SELECT * FROM 7062prosubject WHERE SubjectCode='$code'";
-					$result = mysqli_query($conn, $query) or die(mysqli_error($conn));
+					$subject = new Subject($mysqli);
+                                        $subject_result = $subject->read($code);
 					
-					if(mysqli_num_rows($result)==1){
-						while($row=mysqli_fetch_assoc($result)){
-							$subjectid = $row["SubjectID"];
-							$subjectname = $row["SubjectName"];
-							$subjectdesc = $row["SubjectDescription"];
+					if($subject_result->num_rows==1){
+						while($row=$subject_result->fetch_array(MYSQLI_ASSOC)){
+							$subject->id = $row["SubjectID"];
+							$subject->name = $row["SubjectName"];
+							$subject->description = $row["SubjectDescription"];
 							
 					echo "<div id='titlehead'>
 							<h3>Edit Subject</h3>
@@ -107,7 +109,7 @@
 										<label for='subjectname'>Subject Name</label>
 									</div>
 									<div class='col-sm-12 col-md'>
-										<input type='text' value='$subjectname' id='subjectname' name='subjectname' required='required' style='width:75%;'>
+										<input type='text' value='$subject->name' id='subjectname' name='subjectname' required='required' style='width:75%;'>
 									</div>
 								</div>
 								<div class='row responsive-label'>
@@ -123,11 +125,11 @@
 										<label for='subjectdesc'>Subject Description</label>
 									</div>
 									<div class='col-sm-12 col-md'>
-										<textarea value='$subjectdesc' name='description' placeholder='Add new description...' style='width:95%;height:250px'></textarea>
+										<textarea id='description' name='description' placeholder='Add new description...' style='width:95%;height:250px'>$subject->description</textarea>
 									</div>
 								</div>
 								<div class='hide-form'>
-									<input type='number' name='subjectid' class='hidden' value='$subjectid' id='hideform'>
+									<input type='number' name='subjectid' class='hidden' value='$subject->id' id='hideform'>
 								</div>
 							</fieldset>
 							<div class='row'>		

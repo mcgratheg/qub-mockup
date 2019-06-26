@@ -12,8 +12,31 @@ class UserType {
         $this->connection = $mysqli;
     }
     
-    function read() {
+    function readCount() {
+        $query = "SELECT COUNT(UserTypeID) AS 'COUNT' FROM 7062prousertype";
+        $stmt = $this->connection->prepare($query);
+        if($stmt->execute()) {
+            $result = $stmt->get_result();
+        }
         
+        $row = $result->fetch_array(MYSQLI_ASSOC);
+        $count = $row['COUNT'];
+        
+        return $count;
+    }
+    
+    function read_type($id) {
+        $query = "SELECT Type FROM 7062prousertype WHERE UserTypeID = ?";
+        $stmt = $this->connection->prepare($query);
+        $stmt->bind_param('i', $id);
+        if($stmt->execute()) {
+            $result = $stmt->get_result();
+        }
+        
+        $row = $result->fetch_array(MYSQLI_ASSOC);
+        $type = $row["Type"];
+        
+        return $type;
     }
     
     function create() {

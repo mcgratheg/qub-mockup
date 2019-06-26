@@ -49,9 +49,10 @@ class User {
         
     }
     
-    function readAll($login, $id) {
+    function readAll($user_type, $login, $id) {
         //select all data for user
-        $query = "SELECT * FROM 7062prouser INNER JOIN 7062prologindetails ON 7062prouser.UserID=7062prologindetails.User_ID WHERE UserID=?";
+        $query = "SELECT * FROM 7062prouser INNER JOIN 7062prologindetails ON 7062prouser.UserID=7062prologindetails.User_ID INNER JOIN 7062prousertype
+					ON 7062prouser.UserType_ID=7062prousertype.UserTypeID WHERE UserID=?";
         
         $stmt = $this->connection->prepare($query);
         $stmt->bind_param('i', $id);
@@ -75,6 +76,8 @@ class User {
             $this->home_number = $row['HomeNumber'];
             $this->mobile_number = $row['MobileNumber'];
             $login->email = $row['Email'];
+            $user_type->id = $row['UserType_ID'];
+            $user_type->name = $row['Type'];
         }
     }
     
@@ -89,12 +92,39 @@ class User {
         return $result;
     }
     
-    function create() {
+    function read_count($user_type_id) {
+        $query = "SELECT COUNT(UserID) AS 'COUNT' FROM 7062prouser WHERE UserType_ID = ?";
+        $stmt = $this->connection->prepare($query);
+        $stmt->bind_param('i', $user_type_id);
         
-        $query = "INSERT INTO 7062prouser (UserType_ID, FirstName, LastName, DateOfBirth, Address, City, PostCode, HomeNumber, MobileNumber) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        if($stmt->execute()) {
+            $result = $stmt->get_result();
+        }
+        
+        $row = $result->fetch_array(MYSQLI_ASSOC);
+        $count = $row['COUNT'];
+        
+        return $count;
+    }
+    
+    function read_user_search() {
+        $query = "SELECT UserID, Type, FirstName, LastName FROM 7062prouser INNER JOIN 7062prousertype ON 7062prouser.UserType_ID=7062prousertype.UserTypeID
+				ORDER BY UserTypeID, LastName";
+        $stmt = $this->connection->prepare($query);
+        
+        if($stmt->execute()) {
+            $result = $stmt->get_result();
+        }
+        
+        return $result;
+    }
+    
+    function create($user_type, $first_name, $last_name, $date_of_birth, $address, $city, $postcode) {
+        
+        $query = "INSERT INTO 7062prouser (UserType_ID, FirstName, LastName, DateOfBirth, Address, City, PostCode) VALUES (?, ?, ?, ?, ?, ?, ?)";
         
         $stmt = $this->connection->prepare($query);
-        $stmt->bind_param('issssss', $this->type, $this->first_name, $this->last_name, $this->date_of_birth, $this->address, $this->city, $this->postcode, $this->home_number, $this->mobile_number);
+        $stmt->bind_param('issssss', $user_type, $first_name, $last_name, $date_of_birth, $address, $city, $postcode);
         
         if($stmt->execute()) {
             return true;

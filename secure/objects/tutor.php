@@ -23,14 +23,8 @@ class Tutor {
         if ($stmt->execute()) {
             $result = $stmt->get_result();
         }
-
-        if ($result->num_rows == 1) {
-            $row = $result->fetch_array(MYSQLI_ASSOC);
-
-            $this->room_number = $row['RoomNumber'];
-            $this->room_address = $row['RoomAddress'];
-            $this->phone_ext = $row['PhoneExtension'];
-        }
+        
+        return $result;
     }
 
     function searchTutor($userid) {
@@ -47,12 +41,22 @@ class Tutor {
         return $result;
     }
 
-    function create() {
+    function create($user_id, $room_number, $room_address, $phone_ext) {
+        $query = "INSERT INTO 7062protutordetails (User_ID, RoomNumber, RoomAddress, PhoneExtension) VALUES (?, ?, ?, ?)";
+        $stmt = $this->connection->prepare($query);
+        $stmt->bind_param('isss', $user_id, $room_number, $room_address, $phone_ext);
         
+        $stmt->execute();
+        $stmt->close();
     }
 
-    function update() {
+    function update($room_number, $room_address, $phone_ext, $user_id) {
+        $query = "UPDATE 7062protutordetails SET RoomNumber=?, RoomAddress=?, PhoneExtension=? WHERE User_ID=?";
+        $stmt = $this->connection->prepare($query);
+        $stmt->bind_param('sssi', $room_number, $room_address, $phone_ext, $user_id);
         
+        $stmt->execute();
+        $stmt->close();
     }
 
     function delete() {

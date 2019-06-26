@@ -7,22 +7,21 @@
 		
 	}
 	
-	
-	include("../connect/conn.php");
-	
-	$email = $_SESSION["cater_40105701"];
-	$userquery = "SELECT * FROM 7062prouser INNER JOIN 7062prologindetails ON 7062prouser.UserID=7062prologindetails.User_ID WHERE 7062prologindetails.Email='$email'";
-	$result = mysqli_query($conn, $userquery) or die(mysqli_error($conn));
-	
-	$row=mysqli_fetch_assoc($result);
-	
-	$userid = $row["UserID"];
-	$userfirst = $row["FirstName"];
-	$userlast = $row["LastName"];
-	$usertype = $row["UserType_ID"];
+include("../connect/database.php");
+include("../objects/user.php");
+include("../objects/usertype.php");
+include("../objects/login.php");
+include("../objects/tutor.php");
 
-	
-	
+$email = $_SESSION["cater_40105701"];
+
+$db = Database::getInstance();
+$mysqli = $db->getConnection();
+
+$user = new User($mysqli);
+$login = new Login($mysqli);
+
+$stmt = $user->readUser($email);	
 ?>
 <!DOCTYPE html>
 <html>
@@ -51,7 +50,7 @@
 			<?php echo"<a href='index.php' class='logo'>
 			<img src='../../img/bird-bluetit.png' width='50px'></a>
 			<a href='index.php' class='button'>McG VLE</a>
-			<a href='../displayprofile.php?userid=$userid' class='button' id='userbutton'>$userfirst $userlast</a>
+			<a href='../displayprofile.php?userid=$user->id' class='button' id='userbutton'>$user->first_name $user->last_name</a>
                         <span>|</span>
                         <a href='../signout.php' class='button'>Sign Out</a>";?>
 		</header>
@@ -62,7 +61,7 @@
 				<label for="drawer-control" class="drawer-close"></label>
 				<ul>
 					<li><h4>Navigation</h4></li>
-					<?php echo"<li><a href='../displayprofile.php?userid=$userid' class='button'>$userfirst $userlast</a></li>
+					<?php echo"<li><a href='../displayprofile.php?userid=$user->id' class='button'>$user->first_name $user->last_name</a></li>
 					<li><a href='index.php' class='button'>Home</a></li>";?>
 					<li><a href="../subjectsearch.php" class="button">Subjects</a></li>
 					<li><a href="../staffsearch.php" class="button">Staff</a></li>
@@ -75,21 +74,21 @@
 					$id= $_GET["id"];
 					//echo $id;
 					
-					$query = "SELECT FirstName, LastName, RoomNumber, RoomAddress, PhoneExtension FROM 7062prouser INNER JOIN 7062protutordetails ON
-					7062prouser.UserID=7062protutordetails.User_ID WHERE UserID=$id";
-					$result = mysqli_query($conn, $query) or die(mysqli_error($conn));
-					if(mysqli_num_rows($result)==1){
-						while($row=mysqli_fetch_array($result)){
-							$fname = $row["FirstName"];
-							$lname = $row["LastName"];
-							$roomnumber = $row["RoomNumber"];
-							$roomaddress = $row["RoomAddress"];
-							$phoneext = $row["PhoneExtension"];
+                                        $tutor_details = new Tutor($mysqli);
+                                        $tutor_user = new User($mysqli);
+                                        $tutor_result = $tutor_details->searchTutor($id);
+					if($tutor_result->num_rows==1){
+						while($row=$tutor_result->fetch_array(MYSQLI_ASSOC)){
+							$tutor_user->first_name = $row["FirstName"];
+							$tutor_user->last_name = $row["LastName"];
+							$tutor_details->room_number = $row["RoomNumber"];
+							$tutor_details->room_address = $row["RoomAddress"];
+							$tutor_details->phone_ext = $row["PhoneExtension"];
 							
 							echo "<div id='titlehead'>
 									<h4>Office Details</h4>
 									<br>
-									<p>$fname $lname</p>
+									<p>$tutor_user->first_name $tutor_user->last_name</p>
 								</div>
 								<form method='post' id='myForm' action='updateoffice.php'>
 									<fieldset>
@@ -98,7 +97,7 @@
 												<label for='room'>Room</label>
 											</div>
 											<div class='col-sm-12 col-md'>
-												<input type='text' value='$roomnumber' name='room' style='width:65%;'>
+												<input type='text' value='$tutor_details->room_number' name='room' style='width:65%;'>
 											</div>
 										</div>
 										<div class='row responsive-label'>
@@ -106,7 +105,7 @@
 												<label for='address'>Address</label>
 											</div>
 											<div class='col-sm-12 col-md'>
-												<input type='text' value='$roomaddress' name='address' style='width:65%;'>
+												<input type='text' value='$tutor_details->room_address' name='address' style='width:65%;'>
 											</div>
 										</div>
 										<div class='row responsive-label'>
@@ -114,7 +113,7 @@
 												<label for='extension'>Extension</label>
 											</div>
 											<div class='col-sm-12 col-md'>
-												<input type='text' value='$phoneext' name='extension' style='width:65%;'>
+												<input type='text' value='$tutor_details->phone_ext' name='extension' style='width:65%;'>
 											</div>
 										</div>
 										<div class='hide-form'>
@@ -138,6 +137,3 @@
 		</footer>	
 	</body>
 </html>
-<?php
-	mysqli_close($conn);
-?>
