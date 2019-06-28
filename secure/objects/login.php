@@ -14,7 +14,7 @@ class Login {
         $this->connection = $mysqli;
     }
     
-    function readCheckUser($email, $password) {
+    function read_check_user($email, $password) {
         
         $query = "SELECT * FROM 7062prologindetails WHERE Email= ? and Password=MD5(?) and Email LIKE '%qub.ac.uk'";
         
@@ -45,7 +45,7 @@ class Login {
         $stmt->close();
     }
     
-    function updatePassword($password_hash, $email) {
+    function update_password($password_hash, $email) {
         
         $query = "UPDATE 7062prologindetails SET Password=? WHERE Email=?";
         $stmt = $this->connection->prepare($query);

@@ -18,7 +18,7 @@ $mysqli = $db->getConnection();
 $user = new User($mysqli);
 $login = new Login($mysqli);
 
-$stmt = $user->readUser($email);
+$stmt = $user->read_user($email);
 ?>
 <!DOCTYPE html>
 <html>
@@ -75,7 +75,7 @@ $id = $_GET["id"];
 $user_profile = new User($mysqli);
 $user_login = new Login($mysqli);
 $user_type = new UserType($mysqli);
-$user_result = $user_profile->readAll($user_type, $user_login, $id);
+$user_result = $user_profile->read_all($user_type, $user_login, $id);
 
 echo "<div id='titlehead'>
 									<h4>Office Details</h4>

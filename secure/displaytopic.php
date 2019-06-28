@@ -22,7 +22,7 @@ $mysqli = $db->getConnection();
 $user = new User($mysqli);
 $login = new Login($mysqli);
 
-$stmt = $user->readUser($email);	
+$stmt = $user->read_user($email);	
 ?>
 <!DOCTYPE html>
 <html>
@@ -83,7 +83,7 @@ $stmt = $user->readUser($email);
 					//echo "<h2>$topicid</h2>";
                                         
                                         $subject = new Subject($mysqli);
-                                        $result = $subject->readSubjectTopic($topicid);
+                                        $result = $subject->read_subject_topic($topicid);
 
 					if($result->num_rows > 0) {
 						while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
@@ -95,7 +95,7 @@ $stmt = $user->readUser($email);
 					
                                         $topic = new Topic ($mysqli);
                                         $topic_user = new User($mysqli);
-                                        $topic_result = $topic->readTopic($topicid);
+                                        $topic_result = $topic->read_topic($topicid);
 					if($topic_result->num_rows > 0) {
 						while ($row = $topic_result->fetch_array(MYSQLI_ASSOC)) {
 							$topic->id = $row["TopicID"];
@@ -125,7 +125,7 @@ $stmt = $user->readUser($email);
 					 
                                                 $reply = new Reply($mysqli);
                                                 $reply_user = new User($mysqli);
-                                                $reply_result = $reply->readReply($topicid);
+                                                $reply_result = $reply->read_reply($topicid);
 						if($reply_result->num_rows > 0) {
 							while ($row = $reply_result->fetch_array(MYSQLI_ASSOC)) {
 								$reply->content = $row["ReplyContent"];

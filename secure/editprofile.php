@@ -17,7 +17,7 @@ $mysqli = $db->getConnection();
 $user = new User($mysqli);
 $login = new Login($mysqli);
 
-$stmt = $user->readUser($email);
+$stmt = $user->read_user($email);
 ?>
 <!DOCTYPE html>
 <html>
@@ -105,7 +105,7 @@ $stmt = $user->readUser($email);
 
                     $user_profile = new User($mysqli);
                     $user_login = new Login($mysqli);
-                    $user_result = $user_profile->readAll($user_login, $id);
+                    $user_result = $user_profile->read_all($user_login, $id);
 
                     echo "<div id='titlehead'>
 									<h4>Edit Details</h4>

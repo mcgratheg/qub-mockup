@@ -20,7 +20,7 @@ $user = new User($mysqli);
 $login = new Login($mysqli);
 $subject = new Subject($mysqli);
 
-$stmt = $user->readUser($email);
+$stmt = $user->read_user($email);
 ?>
 <!DOCTYPE html>
 <html>

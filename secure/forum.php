@@ -21,7 +21,7 @@ $mysqli = $db->getConnection();
 $user = new User($mysqli);
 $login = new Login($mysqli);
 
-$stmt = $user->readUser($email);
+$stmt = $user->read_user($email);
 ?>
 <!DOCTYPE html>
 <html>
@@ -76,7 +76,7 @@ $stmt = $user->readUser($email);
                     $code = $_GET['subject'];
                     //echo "<h2>$subjectid</h2>";
                     $class_details = new ClassDetails($mysqli);
-                    $class_result = $class_details->readClassDetails($user->id);
+                    $class_result = $class_details->read_class_details($user->id);
                     if ($class_result->num_rows == 1 || $user->type != 3) {
                         $subject = new Subject($mysqli);
                         $subject_result = $subject->read($code);
@@ -100,7 +100,7 @@ $stmt = $user->readUser($email);
                                 $topic_user = new User($mysqli);
                                 $reply = new Reply($mysqli);
                                 $reply_user = new User($mysqli);
-                                $topic_result = $topic->readTopicSubject($code);
+                                $topic_result = $topic->read_topic_subject($code);
                                 if ($topic_result->num_rows > 0) {
                                     while ($row = $topic_result->fetch_array(MYSQLI_ASSOC)) {
                                         $topic->id = $row["TopicID"];
@@ -122,7 +122,7 @@ $stmt = $user->readUser($email);
 													<p>By $topic_user->first_name $topic_user->last_name</p>
 													<p>|</p>
 													<p>Created $topic->date</p>";
-                                        $reply_result = $reply->readReplyUser($topic->id);
+                                        $reply_result = $reply->read_reply_user($topic->id);
                                         if ($reply_result->num_rows == 1) {
                                             while ($r = $reply_result->fetch_array(MYSQLI_ASSOC)) {
                                                 $reply_user->first_name = $r["FirstName"];

@@ -22,7 +22,7 @@ $mysqli = $db->getConnection();
 $user = new User($mysqli);
 $login = new Login($mysqli);
 
-$stmt = $user->readUser($email);	
+$stmt = $user->read_user($email);	
 ?>
 <!DOCTYPE html>
 <html>
@@ -94,7 +94,7 @@ $stmt = $user->readUser($email);
 				$code = $_GET["subject"];
 				
                                 $class_details = new ClassDetails($mysqli);
-                                $class_result = $class_details->readClassDetails($user->id);
+                                $class_result = $class_details->read_class_details($user->id);
 				if($class_result->num_rows == 1 || $user->type!=3){
                                         $subject = new Subject($mysqli);
                                         $subject_result = $subject->read($code);
@@ -117,7 +117,7 @@ $stmt = $user->readUser($email);
 
 				$document = new Document($mysqli);
                                 $document_user = new User($mysqli);
-				$document_result = $document->readDocument($code);
+				$document_result = $document->read_document($code);
 				if($document_result->num_rows > 0) {
 					//echo "<p>Stuff found in table</p>";
 					echo "<table>

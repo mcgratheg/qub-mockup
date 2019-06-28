@@ -15,7 +15,7 @@ class Reply {
         $this->connection = $mysqli;
     }
     
-    function readReply($id) {
+    function read_reply($id) {
         $query = "SELECT * FROM 7062proreply INNER JOIN 7062prouser ON 7062proreply.ReplyBy_ID=7062prouser.UserID WHERE ReplyTopic_ID = ?";
         $stmt = $this->connection->prepare($query);
         $stmt->bind_param('i', $id);
@@ -27,7 +27,7 @@ class Reply {
         return $result; 
     }
     
-    function readReplyUser($id) {
+    function read_reply_user($id) {
         $query = "SELECT 7062prouser.FirstName, 7062prouser.LastName FROM 7062prouser INNER JOIN
 								7062proreply ON 7062prouser.UserID=7062proreply.ReplyBy_ID WHERE 7062proreply.ReplyTopic_ID = ? ORDER BY 
 								7062proreply.ReplyDate DESC LIMIT 1";

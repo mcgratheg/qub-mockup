@@ -16,7 +16,7 @@ $email = $mysqli->real_escape_string(trim($_POST["email"]));
 
 $pass = $mysqli->real_escape_string(trim($_POST["password"]));
 
-$result = $login->readCheckUser($email, $pass);
+$result = $login->read_check_user($email, $pass);
 
 if($result->num_rows == 1){
 	

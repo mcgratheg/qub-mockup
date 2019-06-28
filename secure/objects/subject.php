@@ -28,7 +28,7 @@ class Subject {
         
     }
     
-    function readSubjectTopic($id) {
+    function read_subject_topic($id) {
         $query = "SELECT SubjectName, SubjectCode FROM 7062prosubject INNER JOIN 7062protopic ON 7062prosubject.SubjectID=7062protopic.Subject_ID WHERE TopicID = ?";
         $stmt = $this->connection->prepare($query);
         $stmt->bind_param('i', $id);
@@ -41,7 +41,7 @@ class Subject {
         
     }
     
-    function readSubjectSearch() {
+    function read_subject_search() {
         $query = "SELECT Level, SubjectID, SubjectCode, SubjectName FROM 7062prosubject INNER JOIN 7062prosubjectlevel ON 
 				7062prosubject.SubjectLevel_ID=7062prosubjectlevel.SubjectLevelID ORDER BY SubjectLevel_ID, SubjectCode ASC";
         $stmt = $this->connection->prepare($query);        

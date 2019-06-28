@@ -18,7 +18,7 @@ $mysqli = $db->getConnection();
 $user = new User($mysqli);
 $login = new Login($mysqli);
 
-$stmt = $user->readUser($email);
+$stmt = $user->read_user($email);
 
 
 $subject_id = $_POST["subject"];

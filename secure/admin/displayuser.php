@@ -21,7 +21,7 @@ $mysqli = $db->getConnection();
 $user = new User($mysqli);
 $login = new Login($mysqli);
 
-$stmt = $user->readUser($email);
+$stmt = $user->read_user($email);
 ?>
 <!DOCTYPE html>
 <html>
@@ -94,7 +94,7 @@ $id = $_GET['id'];
 $user_profile = new User($mysqli);
 $user_login = new Login($mysqli);
 $user_type = new UserType($mysqli);
-$result = $user_profile->readAll($user_type, $user_login, $id);
+$result = $user_profile->read_all($user_type, $user_login, $id);
 $displaydate = date('d/m/Y', strtotime($user_profile->date_of_birth));
 
 
@@ -211,7 +211,7 @@ echo "</div>
 
 if ($user_profile->type == 2) {
     $tutor_details = new Tutor($mysqli);
-    $tutor_result = $tutor_details->readTutor($id);
+    $tutor_result = $tutor_details->read_tutor($id);
     if ($tutor_result->num_rows == 1) {
         while ($row = $tutor_result->fetch_array(MYSQLI_ASSOC)) {
             $tutor_details->room_number = $row["RoomNumber"];

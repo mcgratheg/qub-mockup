@@ -21,7 +21,7 @@ $mysqli = $db->getConnection();
 $user = new User($mysqli);
 $login = new Login($mysqli);
 
-$stmt = $user->readUser($email);	
+$stmt = $user->read_user($email);	
 ?>
 <!DOCTYPE html>
 <html>
@@ -76,7 +76,7 @@ $stmt = $user->readUser($email);
 					
                                         $tutor_details = new Tutor($mysqli);
                                         $tutor_user = new User($mysqli);
-                                        $tutor_result = $tutor_details->searchTutor($id);
+                                        $tutor_result = $tutor_details->search_tutor($id);
 					if($tutor_result->num_rows==1){
 						while($row=$tutor_result->fetch_array(MYSQLI_ASSOC)){
 							$tutor_user->first_name = $row["FirstName"];

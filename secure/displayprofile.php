@@ -7,6 +7,7 @@ if (!isset($_SESSION["cater_40105701"])) {
 
 include("connect/database.php");
 include("objects/user.php");
+include("objects/usertype.php");
 include("objects/login.php");
 include("objects/tutor.php");
 
@@ -19,7 +20,7 @@ $mysqli = $db->getConnection();
 $user = new User($mysqli);
 $login = new Login($mysqli);
 
-$stmt = $user->readUser($email);
+$stmt = $user->read_user($email);
 
 ?>
 <!DOCTYPE html>
@@ -97,9 +98,10 @@ $stmt = $user->readUser($email);
 
                     $profile_user = new User($mysqli);
                     $profile_login = new Login($mysqli);
+                    $profile_type = new UserType($mysqli);
                     $profile_tutor = new Tutor($mysqli);
 
-                    $query = $profile_user->readAll($profileLogin, $id);
+                    $query = $profile_user->read_all($profile_type, $profile_login, $id);
                     $displaydate = date('d/m/Y', strtotime($profile_user->date_of_birth));
 
 
@@ -209,7 +211,7 @@ $stmt = $user->readUser($email);
 
                     if ($profileUser->type == 2) {
                         
-                        $stmt = $profile_tutor->readTutor($id);
+                        $stmt = $profile_tutor->read_tutor($id);
                         
                         echo "<div class='row'>
 													<div class='col-sm-4 col-md-2' id='labels'>

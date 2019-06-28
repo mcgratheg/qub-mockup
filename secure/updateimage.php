@@ -19,11 +19,11 @@ $mysqli = $db->getConnection();
 $user = new User($mysqli);
 $login = new Login($mysqli);
 
-$stmt = $user->readUser($email);
+$stmt = $user->read_user($email);
 	
 $user_id = $_POST["user"];
 $user_update = new User($mysqli);
-$msg = $user_update->updateProfileImage($user_id);
+$msg = $user_update->update_profile_image($user_id);
 	
 ?>
 <!DOCTYPE html>

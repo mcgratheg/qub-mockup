@@ -21,7 +21,7 @@ $mysqli = $db->getConnection();
 $user = new User($mysqli);
 $login = new Login($mysqli);
 
-$stmt = $user->readUser($email);
+$stmt = $user->read_user($email);
 ?>
 <!DOCTYPE html>
 <html>
@@ -100,7 +100,7 @@ $staff_user = new User($mysqli);
 $staff_login = new Login($mysqli);
 $staff_tutor = new Tutor($mysqli);
 
-$staff_result = $staff_tutor->searchTutor($id);
+$staff_result = $staff_tutor->search_tutor($id);
 if ($staff_result->num_rows > 0) {
     while ($row = $staff_result->fetch_array(MYSQLI_ASSOC)) {
         $staff_user->first_name = $row["FirstName"];
@@ -123,7 +123,7 @@ if ($staff_result->num_rows > 0) {
 
         $class_details = new ClassDetails($mysqli);
         $subject = new Subject($mysqli);
-        $subjectresult = $class_details->readTutorDetails($id);
+        $subjectresult = $class_details->read_tutor_details($id);
         if ($subjectresult->num_rows > 0) {
             echo "<div class='row'>
 										<div class='col-sm-3 col-md-1' id='labels'>
@@ -177,6 +177,3 @@ if ($staff_result->num_rows > 0) {
         </footer>	
     </body>
 </html>
-<?php
-mysqli_close($conn);
-?>

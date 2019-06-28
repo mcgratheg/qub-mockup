@@ -19,7 +19,7 @@ $mysqli = $db->getConnection();
 $user = new User($mysqli);
 $login = new Login($mysqli);
 
-$stmt = $user->readUser($email);
+$stmt = $user->read_user($email);
 ?>
 <!DOCTYPE html>
 <html>
@@ -82,12 +82,12 @@ echo "<h3>Add Class</h3><br>";
 $user_profile = new User($mysqli);
 $user_type = new UserType($mysqli);
 $user_login = new Login($mysqli);
-$user_result = $user_profile->readAll($user_type, $user_login, $id);
+$user_result = $user_profile->read_all($user_type, $user_login, $id);
 
 echo "<p>User: $user_profile->first_name $user_profile->last_name</p>";
 
 $subject = new Subject($mysqli);
-$subject_result = $subject->readSubjectSearch();
+$subject_result = $subject->read_subject_search();
 
 echo "<form method='POST' id='myForm' action='insertclass.php'>";
 

@@ -17,7 +17,7 @@ $mysqli = $db->getConnection();
 $user = new User($mysqli);
 $login = new Login($mysqli);
 
-$stmt = $user->readUser($email);
+$stmt = $user->read_user($email);
 
 
 $user_email = filter_var($_POST["email"], FILTER_VALIDATE_EMAIL);
@@ -30,7 +30,7 @@ if ($user_password == $user_confirm) {
     $update_login = new Login($mysqli);
     $password_hash = md5($user_password);
 
-    $result = $update_login->updatePassword($password_hash, $user_email);
+    $result = $update_login->update_password($password_hash, $user_email);
 
     header("Location: displayprofile.php?userid=$user_id");
 } else {

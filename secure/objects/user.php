@@ -21,7 +21,7 @@ class User {
         $this->connection = $mysqli;
     }
     
-    function readUser($email) {
+    function read_user($email) {
         //select current data
         //$query = "SELECT * FROM " . $this->table_name . " INNER JOIN " . $login->table_name . " ON " . $this->table_name . ".UserID =" . $login->table_name . ".User_ID WHERE " . $login->table_name . ".Email= ?";
         $query = "SELECT * FROM 7062prouser INNER JOIN 7062prologindetails ON 7062prouser.UserID=7062prologindetails.User_ID WHERE 7062prologindetails.Email =?";
@@ -49,7 +49,7 @@ class User {
         
     }
     
-    function readAll($user_type, $login, $id) {
+    function read_all($user_type, $login, $id) {
         //select all data for user
         $query = "SELECT * FROM 7062prouser INNER JOIN 7062prologindetails ON 7062prouser.UserID=7062prologindetails.User_ID INNER JOIN 7062prousertype
 					ON 7062prouser.UserType_ID=7062prousertype.UserTypeID WHERE UserID=?";
@@ -81,7 +81,7 @@ class User {
         }
     }
     
-    function readTutor() {
+    function read_tutor() {
         $query = "SELECT UserID, FirstName, LastName, ProfileImage FROM 7062prouser WHERE UserType_ID=2 ORDER BY LastName ASC";
         $stmt = $this->connection->prepare($query);
         
@@ -146,7 +146,7 @@ class User {
         $stmt->close();
     }
     
-    function updateProfileImage($user_id) {
+    function update_profile_image($user_id) {
         $target_dir = "../../img/";
 	$target_file = $target_dir . basename($_FILES["profileimg"]["name"]);
 	$updateimg = basename($_FILES["profileimg"]["name"]);

@@ -12,7 +12,7 @@ class UserType {
         $this->connection = $mysqli;
     }
     
-    function readCount() {
+    function read_count() {
         $query = "SELECT COUNT(UserTypeID) AS 'COUNT' FROM 7062prousertype";
         $stmt = $this->connection->prepare($query);
         if($stmt->execute()) {

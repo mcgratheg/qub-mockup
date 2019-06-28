@@ -16,7 +16,7 @@ class Topic {
         $this->connection = $mysqli;
     }
     
-    function readTopic($id) {
+    function read_topic($id) {
         $query = "SELECT * FROM 7062protopic INNER JOIN 7062prouser ON 7062protopic.TopicBy_ID=7062prouser.UserID WHERE TopicID = ?";
         $stmt = $this->connection->prepare($query);
         $stmt->bind_param('i', $id);
@@ -29,7 +29,7 @@ class Topic {
         
     }
     
-    function readTopicSubject($code) {
+    function read_topic_subject($code) {
         $query = "SELECT * FROM 7062protopic INNER JOIN 7062prouser ON 7062protopic.TopicBy_ID=7062prouser.UserID INNER JOIN 7062prosubject ON
 						7062protopic.Subject_ID=7062prosubject.SubjectID WHERE 7062prosubject.SubjectCode = ?";
         $stmt = $this->connection->prepare($query);

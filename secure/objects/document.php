@@ -15,7 +15,7 @@ class Document {
         $this->connection = $mysqli;
     }
 
-    function readDocument($code) {
+    function read_document($code) {
         $query = "SELECT * FROM 7062prodocument INNER JOIN 7062prosubject ON 7062prodocument.Subject_ID=7062prosubject.SubjectID INNER JOIN 7062prouser ON
 				7062prodocument.User_ID=7062prouser.UserID WHERE SubjectCode=? ORDER BY DateAdded DESC";
         $stmt = $this->connection->prepare($query);

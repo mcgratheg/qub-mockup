@@ -22,7 +22,7 @@ $mysqli = $db->getConnection();
 $user = new User($mysqli);
 $login = new Login($mysqli);
 
-$stmt = $user->readUser($email);
+$stmt = $user->read_user($email);
 	
 	
 ?>
@@ -91,7 +91,7 @@ $stmt = $user->readUser($email);
 				}
 				$subject_level = new SubjectLevel($mysqli);
                                 $subject = new Subject($mysqli);
-                                $result = $subject->readSubjectSearch();
+                                $result = $subject->read_subject_search();
 				if($result->num_rows > 0) {
 					echo "<table>
 								<thead>

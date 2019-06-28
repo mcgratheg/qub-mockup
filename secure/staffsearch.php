@@ -19,7 +19,7 @@ $mysqli = $db->getConnection();
 $user = new User($mysqli);
 $login = new Login($mysqli);
 
-$stmt = $user->readUser($email);
+$stmt = $user->read_user($email);
 	
 	
 ?>
@@ -82,7 +82,7 @@ $stmt = $user->readUser($email);
 			 <br><br>
 			<?php 
 				$staff = new User($mysqli);
-                                $result = $staff->readTutor();
+                                $result = $staff->read_tutor();
 				if($result->num_rows > 0) {
 					while($row= $result->fetch_array(MYSQLI_ASSOC)) {
 						$staff->id=$row["UserID"];

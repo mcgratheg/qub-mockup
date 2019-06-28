@@ -22,7 +22,7 @@ $mysqli = $db->getConnection();
 $user = new User($mysqli);
 $login = new Login($mysqli);
 
-$stmt = $user->readUser($email);
+$stmt = $user->read_user($email);
 	
 ?>
 <!DOCTYPE html>
@@ -85,7 +85,7 @@ $stmt = $user->readUser($email);
 				if($user->type!=1){
                                 $subject = new Subject($mysqli);
                                 $class_details = new ClassDetails($mysqli);
-				$class_details_result = $class_details->readTutorDetails($user->id);
+				$class_details_result = $class_details->read_tutor_details($user->id);
 				
 				if($class_details_result->num_rows > 0){
 					

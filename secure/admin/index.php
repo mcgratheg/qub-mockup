@@ -20,7 +20,7 @@ $mysqli = $db->getConnection();
 $user = new User($mysqli);
 $login = new Login($mysqli);
 
-$stmt = $user->readUser($email);
+$stmt = $user->read_user($email);
 ?>
 <!DOCTYPE html>
 <html>
@@ -75,7 +75,7 @@ echo "<div class='row' id='titlehead'>
 					</div><br><br>";
 
 $user_type = new UserType($mysqli);
-$user_type_count = $user_type->readCount();
+$user_type_count = $user_type->read_count();
 $user_count = new User($mysqli);
 echo "<table>
 							<thead>

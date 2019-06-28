@@ -14,7 +14,7 @@ class Tutor {
         $this->connection = $mysqli;
     }
 
-    function readTutor($userid) {
+    function read_tutor($userid) {
         $query = "SELECT RoomNumber, RoomAddress, PhoneExtension FROM 7062protutordetails WHERE User_ID=?";
 
         $stmt = $this->connection->prepare($query);
@@ -27,7 +27,7 @@ class Tutor {
         return $result;
     }
 
-    function searchTutor($userid) {
+    function search_tutor($userid) {
         $query = "SELECT FirstName, LastName, ProfileImage, Email, RoomNumber, RoomAddress, PhoneExtension FROM 7062prouser INNER JOIN 7062prologindetails ON 
 					7062prouser.UserID=7062prologindetails.User_ID INNER JOIN 7062protutordetails ON 7062prouser.UserID=7062protutordetails.User_ID WHERE 7062prouser.UserID=?";
 
