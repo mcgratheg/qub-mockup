@@ -10,7 +10,7 @@ Based forum layout on QUB student university website and built functionality fro
 
 # Technologies
 * HTML5
-* CSS3
+* Mini CSS v3.01
 * PHP5
 * jQuery
 * JavaScript
