@@ -46,7 +46,7 @@ class Login {
 	    $this->password = $password;
     }
     
-    function read_check_user($email, $password) {
+    public function read_check_user($email, $password) {
         
         $query = "SELECT * FROM 7062prologindetails WHERE Email= ? and Password=MD5(?) and Email LIKE '%qub.ac.uk'";
         
@@ -62,7 +62,7 @@ class Login {
         
     }
     
-    function create($user_id, $user_email, $password) {
+    public function create($user_id, $user_email, $password) {
         $query = "INSERT INTO 7062prologindetails (User_ID, Email, Password) VALUES (?, ?, ?)";
         $stmt = $this->connection->prepare($query);
         $password_hash = md5($password);
@@ -77,7 +77,7 @@ class Login {
         $stmt->close();
     }
     
-    function update_password($password_hash, $email) {
+    public function update_password($password_hash, $email) {
         
         $query = "UPDATE 7062prologindetails SET Password=? WHERE Email=?";
         $stmt = $this->connection->prepare($query);
@@ -92,7 +92,7 @@ class Login {
         return $result;
     }
     
-    function delete() {
+    public function delete() {
         
     }
 }
