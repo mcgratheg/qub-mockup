@@ -22,13 +22,13 @@ $stmt = $user->read_user($email);
 
 //variables for 7062prouser insert
 $user_type = $_POST["usertype"];
-$first_name = trim($_POST["firstname"]);
-$last_name = trim($_POST["lastname"]);
+$first_name = $mysqli->real_escape_string(trim($_POST["firstname"]));
+$last_name = $mysqli->real_escape_string(trim($_POST["lastname"]));
 $dob = $_POST["dateofbirth"];
 $date_of_birth = date('Y-m-d', strtotime($dob));
-$address = trim($_POST["address"]);
-$city = trim($_POST["city"]);
-$postcode = trim($_POST["postcode"]);
+$address = $mysqli->real_escape_string(trim($_POST["address"]));
+$city = $mysqli->real_escape_string(trim($_POST["city"]));
+$postcode = $mysqli->real_escape_string(trim($_POST["postcode"]));
 
 $user_insert = new User($mysqli);
 $user_result = $user_insert->create($user_type, $first_name, $last_name, $date_of_birth, $address, $city, $postcode);
@@ -42,8 +42,8 @@ if ($user_result) {
 $user_id = $mysqli->insert_id;
 
 //variables for 7062prologindetails insert
-$user_email = trim($_POST["emailnew"]);
-$password = trim($_POST["password"]);
+$user_email = $mysqli->real_escape_string(trim($_POST["emailnew"]));
+$password = $mysqli->real_escape_string(trim($_POST["password"]));
 
 $user_login = new Login($mysqli);
 $login_result = $user_login->create($user_id, $user_email, $password);
