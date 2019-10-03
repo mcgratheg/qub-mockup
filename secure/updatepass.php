@@ -21,8 +21,8 @@ $stmt = $user->read_user($email);
 
 
 $user_email = filter_var($_POST["email"], FILTER_VALIDATE_EMAIL);
-$user_password = $_POST["password"];
-$user_confirm = $_POST["confirmpass"];
+$user_password = $mysqli->real_escape_string($_POST["password"]);
+$user_confirm = $mysqli->real_escape_string($_POST["confirmpass"]);
 $user_id = $_POST["user"];
 
 
