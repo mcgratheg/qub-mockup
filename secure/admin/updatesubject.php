@@ -22,9 +22,9 @@ $login = new Login($mysqli);
 $stmt = $user->read_user($email);
 
 
-$subject_description = $_POST["description"];
-$subject_code = $_POST["subjectcode"];
-$subject_name = $_POST["subjectname"];
+$subject_description = $mysqli->real_escape_string($_POST["description"]);
+$subject_code = $mysqli->real_escape_string($_POST["subjectcode"]);
+$subject_name = $mysqli->real_escape_string($_POST["subjectname"]);
 $subject_id = $_POST["subjectid"];
 
 $subject = new Subject($mysqli);
