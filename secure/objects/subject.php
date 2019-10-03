@@ -5,17 +5,57 @@ class Subject {
     private $connection;
     private $table_name = "7062prosubject";
     
-    public $id;
-    public $subject_level_id;
-    public $name;
-    public $code;
-    public $description;
+    private $id;
+    private $subject_level_id;
+    private $name;
+    private $code;
+    private $description;
     
     public function __construct($mysqli) {
         $this->connection = $mysqli;
     }
+	
+    public function get_id() {
+	return $this->id;
+    }
+	
+    public function get_subject_level_id() {
+	return $this->subject_level_id;
+    }
+	
+    public function get_name() {
+	return $this->name;
+    }
+	
+    public function get_code() {
+	return $this->code;
+    }
+	
+    public function get_description() {
+	return $this->description;
+    }
+	
+    public function set_id($id) {
+	$this->id = $id;
+    }
+	
+    public function set_subject_level_id($subject_level_id) {
+	$this->subject_level_id = $subject_level_id;
+    }
+	
+    public function set_name($name) {
+	$this->name = $name;
+    }
+	
+    public function set_code($code) {
+	$this->code = $code;
+    }
+	
+    public function set_description($description) {
+	$this->description = $description;
+    }
     
-    function read($code) {
+    public function read($code) {
         $query = "SELECT * FROM 7062prosubject WHERE SubjectCode = ?";
         $stmt = $this->connection->prepare($query);
         $stmt->bind_param('s', $code);
@@ -28,7 +68,7 @@ class Subject {
         
     }
     
-    function read_subject_topic($id) {
+    public function read_subject_topic($id) {
         $query = "SELECT SubjectName, SubjectCode FROM 7062prosubject INNER JOIN 7062protopic ON 7062prosubject.SubjectID=7062protopic.Subject_ID WHERE TopicID = ?";
         $stmt = $this->connection->prepare($query);
         $stmt->bind_param('i', $id);
@@ -41,7 +81,7 @@ class Subject {
         
     }
     
-    function read_subject_search() {
+    public function read_subject_search() {
         $query = "SELECT Level, SubjectID, SubjectCode, SubjectName FROM 7062prosubject INNER JOIN 7062prosubjectlevel ON 
 				7062prosubject.SubjectLevel_ID=7062prosubjectlevel.SubjectLevelID ORDER BY SubjectLevel_ID, SubjectCode ASC";
         $stmt = $this->connection->prepare($query);        
@@ -53,7 +93,7 @@ class Subject {
         
     }
     
-    function read_count($subject_level_id) {
+    public function read_count($subject_level_id) {
         $query = "SELECT COUNT(SubjectID) AS 'COUNT' FROM 7062prosubject WHERE SubjectLevel_ID = ?";
         $stmt = $this->connection->prepare($query);
         $stmt->bind_param('i', $subject_level_id);
@@ -68,7 +108,7 @@ class Subject {
         return $count;
     }    
     
-    function create($subject_level_id, $subject_code, $subject_name, $subject_description) {
+    public function create($subject_level_id, $subject_code, $subject_name, $subject_description) {
         $query = "INSERT INTO 7062prosubject (SubjectLevel_ID, SubjectCode, SubjectName, SubjectDescription) VALUES (?,?,?,?)";
         $stmt = $this->connection->prepare($query);
         $stmt->bind_param('isss', $subject_level_id, $subject_code, $subject_name, $subject_description);
@@ -77,7 +117,7 @@ class Subject {
         $stmt->close();
     }
     
-    function update($subject_code, $subject_name, $subject_description, $subject_id) {
+    public function update($subject_code, $subject_name, $subject_description, $subject_id) {
         $query = "UPDATE `7062prosubject` SET `SubjectCode`=?, `SubjectName`=?, `SubjectDescription`=? WHERE `SubjectID`=?";
         $stmt = $this->connection->prepare($query);
         $stmt->bind_param('sssi', $subject_code, $subject_name, $subject_description, $subject_id);
@@ -86,7 +126,7 @@ class Subject {
         $stmt->close();
     }
     
-    function delete() {
+    public function delete() {
         
     }
 }
