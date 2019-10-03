@@ -24,9 +24,9 @@ $stmt = $user->read_user($email);
 
 
 $user_id = $_POST["user"];
-$room_number = $_POST["room"];
-$room_address = $_POST["address"];
-$phone_ext = $_POST["extension"];
+$room_number = $mysqli->real_escape_string($_POST["room"]);
+$room_address = $mysqli->real_escape_string($_POST["address"]);
+$phone_ext = $mysqli->real_escape_string($_POST["extension"]);
 
 $tutor_details = new Tutor($mysqli);
 $tutor_result = $tutor_details->create($user_id, $room_number, $room_address, $phone_ext);
