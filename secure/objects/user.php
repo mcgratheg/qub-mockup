@@ -5,23 +5,111 @@ class User {
     private $table_name = "7062prouser";
     
     //object properties
-    public $id;
-    public $type;
-    public $first_name;
-    public $last_name;
-    public $date_of_birth;
-    public $address;
-    public $city;
-    public $postcode;
-    public $home_number;
-    public $mobile_number;
-    public $profile_image;
+    private $id;
+    private $type;
+    private $first_name;
+    private $last_name;
+    private $date_of_birth;
+    private $address;
+    private $city;
+    private $postcode;
+    private $home_number;
+    private $mobile_number;
+    private $profile_image;
     
     public function __construct($mysqli) {
         $this->connection = $mysqli;
     }
+	
+    public function get_id() {
+	return $this->id;
+    }
+	
+    public function get_type() {
+	return $this->type;
+    }
+	
+    public function get_first_name() {
+	return $this->fist_name;
+    }
+	
+    public function get_last_name() {
+	return $this->last_name;
+    }
+	
+    public function get_date_of_birth() {
+	return $this->date_of_birth;
+    }
+	
+    public function get_address() {
+	return $this->address;
+    }
+	
+    public function get_city() {
+	return $this->city;
+    }
+	
+    public function get_postcode() {
+	return $this->postcode;
+    }
+	
+    public function get_home_number() {
+	return $this->home_number;
+    }
+	
+    public function get_mobile_number() {
+	return $this->mobile_number;
+    }
+	
+    public function get_profile_image() {
+	return $this->profile_image;
+    }	
+	
+    public function set_id($id) {
+	$this->id = $id;
+    }
+	
+    public function set_type($type) {
+	$this->type = $type;
+    }
+	
+    public function set_first_name($first_name) {
+	$this->first_name = $first_name;
+    }
+	
+    public function set_last_name($last_name) {
+	$this->last_name = $last_name;
+    }
+	
+    public function set_date_of_birth($date_of_birth) {
+	$this->date_of_birth = $date_of_birth;
+    }	
+	
+    public function set_address($address) {
+	$this->address = $address;
+    }
+	
+    public function set_city($city) {
+	$this->city = $city;
+    }
+	
+    public function set_postcode($postcode) {
+	$this->postcode = $postcode;
+    }
+	
+    public function set_home_number($home_number) {
+	$this->home_number = $home_number;
+    }
+	
+    public function set_mobile_number($mobile_number) {
+	$this->mobile_number = $mobile_number;
+    }
+	
+    public function set_profile_image($profile_image) {
+	$this->profile_image = $profile_image;
+    }	
     
-    function read_user($email) {
+    public function read_user($email) {
         //select current data
         //$query = "SELECT * FROM " . $this->table_name . " INNER JOIN " . $login->table_name . " ON " . $this->table_name . ".UserID =" . $login->table_name . ".User_ID WHERE " . $login->table_name . ".Email= ?";
         $query = "SELECT * FROM 7062prouser INNER JOIN 7062prologindetails ON 7062prouser.UserID=7062prologindetails.User_ID WHERE 7062prologindetails.Email =?";
@@ -49,7 +137,7 @@ class User {
         
     }
     
-    function read_all($user_type, $login, $id) {
+    public function read_all($user_type, $login, $id) {
         //select all data for user
         $query = "SELECT * FROM 7062prouser INNER JOIN 7062prologindetails ON 7062prouser.UserID=7062prologindetails.User_ID INNER JOIN 7062prousertype
 					ON 7062prouser.UserType_ID=7062prousertype.UserTypeID WHERE UserID=?";
@@ -81,7 +169,7 @@ class User {
         }
     }
     
-    function read_tutor() {
+    public function read_tutor() {
         $query = "SELECT UserID, FirstName, LastName, ProfileImage FROM 7062prouser WHERE UserType_ID=2 ORDER BY LastName ASC";
         $stmt = $this->connection->prepare($query);
         
@@ -92,7 +180,7 @@ class User {
         return $result;
     }
     
-    function read_count($user_type_id) {
+    public function read_count($user_type_id) {
         $query = "SELECT COUNT(UserID) AS 'COUNT' FROM 7062prouser WHERE UserType_ID = ?";
         $stmt = $this->connection->prepare($query);
         $stmt->bind_param('i', $user_type_id);
@@ -107,7 +195,7 @@ class User {
         return $count;
     }
     
-    function read_user_search() {
+    public function read_user_search() {
         $query = "SELECT UserID, Type, FirstName, LastName FROM 7062prouser INNER JOIN 7062prousertype ON 7062prouser.UserType_ID=7062prousertype.UserTypeID
 				ORDER BY UserTypeID, LastName";
         $stmt = $this->connection->prepare($query);
@@ -119,7 +207,7 @@ class User {
         return $result;
     }
     
-    function create($user_type, $first_name, $last_name, $date_of_birth, $address, $city, $postcode) {
+    public function create($user_type, $first_name, $last_name, $date_of_birth, $address, $city, $postcode) {
         
         $query = "INSERT INTO 7062prouser (UserType_ID, FirstName, LastName, DateOfBirth, Address, City, PostCode) VALUES (?, ?, ?, ?, ?, ?, ?)";
         
@@ -135,7 +223,7 @@ class User {
         $stmt->close();
     }
     
-    function update($update_first, $update_last, $update_dob, $update_address, $update_city, $update_postcode, $update_home, $update_mobile, $user_id) {
+    public function update($update_first, $update_last, $update_dob, $update_address, $update_city, $update_postcode, $update_home, $update_mobile, $user_id) {
         
         $query = "UPDATE 7062prouser SET FirstName=?, LastName=?, DateOfBirth=?, Address=?, City=?, PostCode=?, HomeNumber=?, MobileNumber=? WHERE UserID=?";
         
@@ -146,7 +234,7 @@ class User {
         $stmt->close();
     }
     
-    function update_profile_image($user_id) {
+    public function update_profile_image($user_id) {
         $target_dir = "../../img/";
 	$target_file = $target_dir . basename($_FILES["profileimg"]["name"]);
 	$updateimg = basename($_FILES["profileimg"]["name"]);
@@ -204,7 +292,7 @@ class User {
        
     }  
     
-    function delete($userid) {
+    public function delete($userid) {
         
         $query = "DELETE FROM 7062prouser WHERE UserID=?";
         
