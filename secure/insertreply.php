@@ -21,8 +21,8 @@ $login = new Login($mysqli);
 $stmt = $user->read_user($email);
 
 
-$replycontent = $_POST["reply"];
-$replytopic = $_POST["topic"];
+$replycontent = $mysqli->real_escape_string($_POST["reply"]);
+$replytopic = $mysqli->real_escape_string($_POST["topic"]);
 $replyuser = $_POST["user"];
 
 $reply = new Reply($mysqli);
