@@ -4,18 +4,66 @@ class Document {
 
     private $connection;
     private $table_name = "7062prodocument";
-    public $id;
-    public $user_id;
-    public $subject_level_id;
-    public $subject_id;
-    public $date_added;
-    public $doc_path;
+    private $id;
+    private $user_id;
+    private $subject_level_id;
+    private $subject_id;
+    private $date_added;
+    private $doc_path;
 
     public function __construct($mysqli) {
         $this->connection = $mysqli;
     }
+	
+    public function get_id() {
+	return $this->id;
+    }
+	
+    public function get_user_id() {
+	return $this->user_id;
+    }
+	
+    public function get_subject_level_id() {
+	return $this->subject_level_id;
+    }
+	
+    public function get_subject_id() {
+	return $this->subject_id;
+    }
+	
+    public function get_date_added() {
+	return $this->date_added;
+    }
+	
+    public function get_doc_path() {
+	return $this->doc_path;
+    }
+	
+    public function set_id($id) {
+	 $this->id = $id;
+    }
+	
+    public function set_user_id($user_id) {
+	 $this->user_id = $user_id;
+    }
+	
+    public function set_subject_level_id($subject_level_id) {
+	 $this->subject_level_id = $subject_level_id;
+    }
+	
+    public function set_subject_id($subject_id) {
+	 $this->subject_id = $subject_id;
+    }
+	
+    public function set_date_added($date_added) {
+	 $this->date_added = $date_added;
+    }	
+	
+    public function set_doc_path($doc_path) {
+	 $this->doc_path = $doc_path;
+    }
 
-    function read_document($code) {
+    public function read_document($code) {
         $query = "SELECT * FROM 7062prodocument INNER JOIN 7062prosubject ON 7062prodocument.Subject_ID=7062prosubject.SubjectID INNER JOIN 7062prouser ON
 				7062prodocument.User_ID=7062prouser.UserID WHERE SubjectCode=? ORDER BY DateAdded DESC";
         $stmt = $this->connection->prepare($query);
@@ -28,7 +76,7 @@ class Document {
         return $result;
     }
 
-    function create($user_id, $subject_level_id, $subject_id) {
+    public function create($user_id, $subject_level_id, $subject_id) {
         $target_dir = "../uploads/";
         $target_file = $target_dir . basename($_FILES["uploadfile"]["name"]);
         $uploadfile = basename($_FILES["uploadfile"]["name"]);
@@ -79,11 +127,11 @@ class Document {
         return $msg;
     }
 
-    function update() {
+    public function update() {
         
     }
 
-    function delete() {
+    public function delete() {
         
     }
 
