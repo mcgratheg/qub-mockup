@@ -5,14 +5,22 @@ class SubjectLevel {
     private $connection;
     private $table_name = "7062prosubjectlevel";
     
-    public $id;
-    public $name;
+    private $id;
+    private $name;
     
     public function __construct($mysqli) {
         $this->connection = $mysqli;
     }
     
-    function read_count() {
+    public function get_id() {
+	    return $this->id;
+    }
+    
+    public function get_name() {
+	    return $this->name;
+    }    
+    
+    public function read_count() {
         $query = "SELECT COUNT(SubjectLevelID) AS 'COUNT' FROM 7062prosubjectlevel";
         $stmt = $this->connection->prepare($query);
         if($stmt->execute()) {
@@ -25,7 +33,7 @@ class SubjectLevel {
         return $count;        
     }
     
-    function read_level($id) {
+    public function read_level($id) {
         $query = "SELECT Level FROM 7062prosubjectlevel WHERE SubjectLevelID = ?";
         $stmt = $this->connection->prepare($query);
         $stmt->bind_param('i', $id);
@@ -39,15 +47,15 @@ class SubjectLevel {
         return $level;
     }    
     
-    function create() {
+    public function create() {
         
     }
     
-    function update() {
+    public function update() {
         
     }
     
-    function delete() {
+    public function delete() {
         
     }
 }
