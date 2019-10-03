@@ -5,14 +5,30 @@ class UserType {
     private $connection;
     private $table_name = "7062prousertype";
     
-    public $id;
-    public $name;
+    private $id;
+    private $name;
     
     public function __construct($mysqli) {
         $this->connection = $mysqli;
     }
     
-    function read_count() {
+    public function get_id() {
+        return $this->id;
+    }
+    
+    public function get_name() {
+        return $this->name;
+    }
+    
+    public function set_id($id) {
+	    $this->id = $id;
+    }
+    
+    public function set_name($name) {
+	    $this->name = $name;
+    }
+    
+    public function read_count() {
         $query = "SELECT COUNT(UserTypeID) AS 'COUNT' FROM 7062prousertype";
         $stmt = $this->connection->prepare($query);
         if($stmt->execute()) {
@@ -25,7 +41,7 @@ class UserType {
         return $count;
     }
     
-    function read_type($id) {
+    public function read_type($id) {
         $query = "SELECT Type FROM 7062prousertype WHERE UserTypeID = ?";
         $stmt = $this->connection->prepare($query);
         $stmt->bind_param('i', $id);
@@ -39,15 +55,15 @@ class UserType {
         return $type;
     }
     
-    function create() {
+    public function create() {
         
     }
     
-    function update() {
+    public function update() {
         
     }
     
-    function delete() {
+    public function delete() {
         
     }
 }
