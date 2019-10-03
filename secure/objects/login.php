@@ -5,13 +5,45 @@ class Login {
     private $connection;
     private $table_name = "7062prologindetails";
     
-    public $id;
-    public $user_id;
-    public $email;
-    public $password;
+    private $id;
+    private $user_id;
+    private $email;
+    private $password;
     
     public function __construct($mysqli) {
         $this->connection = $mysqli;
+    }
+    
+    public function get_id() {
+        return $this->id;
+    }
+    
+    public function get_user_id() {
+        return $this->user_id;
+    }
+    
+    public function get_email() {
+        return $this->email;
+    }
+    
+    public function get_password() {
+        return $this->password;
+    }
+    
+    public function set_id($id) {
+	    $this->id = $id;
+    }
+    
+    public function set_user_id($user_id) {
+	    $this->user_id = $user_id;
+    }
+    
+    public function set_email($email) {
+	    $this->email = $email;
+    }
+    
+    public function set_password($password) {
+	    $this->password = $password;
     }
     
     function read_check_user($email, $password) {
