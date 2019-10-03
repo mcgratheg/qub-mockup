@@ -21,8 +21,8 @@ $login = new Login($mysqli);
 $stmt = $user->read_user($email);
 
 
-$topic_title = trim($_POST["title"]);
-$topic_content = $_POST["content"];
+$topic_title = $mysqli->real_escape_string(trim($_POST["title"]));
+$topic_content = $mysqli->real_escape_string($_POST["content"]);
 $subject_id = $_POST["subject"];
 $user_id = $_POST["user"];
 
