@@ -23,7 +23,7 @@ $stmt = $user->read_user($email);
 
 $subject_id = $_POST["subject"];
 $subject_level_id = $_POST["subjectlevel"];
-$subject_code = $_POST["subjectcode"];
+$subject_code = $mysqli->real_escape_string($_POST["subjectcode"]);
 $user_id = $_POST["user"];
 
 $document = new Document($mysqli);
