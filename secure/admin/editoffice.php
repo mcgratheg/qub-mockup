@@ -50,7 +50,7 @@ $stmt = $user->read_user($email);
 			<?php echo"<a href='index.php' class='logo'>
 			<img src='../../img/bird-bluetit.png' width='50px'></a>
 			<a href='index.php' class='button'>McG VLE</a>
-			<a href='../displayprofile.php?userid=$user->id' class='button' id='userbutton'>$user->first_name $user->last_name</a>
+			<a href='../displayprofile.php?userid=" . $user->get_id() . "' class='button' id='userbutton'>" . $user->get_first_name() . " " . $user->get_last_name() . "</a>
                         <span>|</span>
                         <a href='../signout.php' class='button'>Sign Out</a>";?>
 		</header>
@@ -61,7 +61,7 @@ $stmt = $user->read_user($email);
 				<label for="drawer-control" class="drawer-close"></label>
 				<ul>
 					<li><h4>Navigation</h4></li>
-					<?php echo"<li><a href='../displayprofile.php?userid=$user->id' class='button'>$user->first_name $user->last_name</a></li>
+					<?php echo"<li><a href='../displayprofile.php?userid=" . $user->get_id() . "' class='button'>" . $user->get_first_name() . " " . $user->get_last_name() . "</a></li>
 					<li><a href='index.php' class='button'>Home</a></li>";?>
 					<li><a href="../subjectsearch.php" class="button">Subjects</a></li>
 					<li><a href="../staffsearch.php" class="button">Staff</a></li>
@@ -79,16 +79,16 @@ $stmt = $user->read_user($email);
                                         $tutor_result = $tutor_details->search_tutor($id);
 					if($tutor_result->num_rows==1){
 						while($row=$tutor_result->fetch_array(MYSQLI_ASSOC)){
-							$tutor_user->first_name = $row["FirstName"];
-							$tutor_user->last_name = $row["LastName"];
-							$tutor_details->room_number = $row["RoomNumber"];
-							$tutor_details->room_address = $row["RoomAddress"];
-							$tutor_details->phone_ext = $row["PhoneExtension"];
+							$tutor_user->set_first_name($row["FirstName"]);
+							$tutor_user->set_last_name($row["LastName"]);
+							$tutor_details->set_room_number($row["RoomNumber"]);
+							$tutor_details->set_room_address($row["RoomAddress"]);
+							$tutor_details->set_phone_ext($row["PhoneExtension"]);
 							
 							echo "<div id='titlehead'>
 									<h4>Office Details</h4>
 									<br>
-									<p>$tutor_user->first_name $tutor_user->last_name</p>
+									<p>" . $tutor_user->get_first_name() . " " . $tutor_user->get_last_name() . "</p>
 								</div>
 								<form method='post' id='myForm' action='updateoffice.php'>
 									<fieldset>
@@ -97,7 +97,7 @@ $stmt = $user->read_user($email);
 												<label for='room'>Room</label>
 											</div>
 											<div class='col-sm-12 col-md'>
-												<input type='text' value='$tutor_details->room_number' name='room' style='width:65%;'>
+												<input type='text' value='" . $tutor_details->get_room_number() . "' name='room' style='width:65%;'>
 											</div>
 										</div>
 										<div class='row responsive-label'>
@@ -105,7 +105,7 @@ $stmt = $user->read_user($email);
 												<label for='address'>Address</label>
 											</div>
 											<div class='col-sm-12 col-md'>
-												<input type='text' value='$tutor_details->room_address' name='address' style='width:65%;'>
+												<input type='text' value='" . $tutor_details->get_room_address() . "' name='address' style='width:65%;'>
 											</div>
 										</div>
 										<div class='row responsive-label'>
@@ -113,7 +113,7 @@ $stmt = $user->read_user($email);
 												<label for='extension'>Extension</label>
 											</div>
 											<div class='col-sm-12 col-md'>
-												<input type='text' value='$tutor_details->phone_ext' name='extension' style='width:65%;'>
+												<input type='text' value='" . $tutor_details->get_phone_ext() . "' name='extension' style='width:65%;'>
 											</div>
 										</div>
 										<div class='hide-form'>
@@ -137,3 +137,6 @@ $stmt = $user->read_user($email);
 		</footer>	
 	</body>
 </html>
+<?php
+	$mysqli->close();
+?>

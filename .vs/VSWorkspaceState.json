@@ -1,9 +1,8 @@
 {
   "ExpandedNodes": [
     "",
-    "\\secure",
-    "\\secure\\connect"
+    "\\secure"
   ],
-  "SelectedNode": "\\secure\\connect\\database.php",
+  "SelectedNode": "\\secure\\documents.php",
   "PreviewInSolutionExplorer": false
 }

@@ -58,7 +58,7 @@ header("Location: forum.php?subjectid=$subject_id");
 <?php echo"<a href='index.php' class='logo'>
 			<img src='../img/bird-bluetit.png' width='50px'></a>
 			<a href='index.php' class='button'>McG VLE</a>
-			<a href='displayprofile.php?userid=$user->id' class='button' id='userbutton'>$user->first_name $user->last_name</a>
+			<a href='displayprofile.php?userid=" . $user->get_id() . "' class='button' id='userbutton'>" . $user->get_first_name() . " " . $user->get_last_name() . "</a>
                         <span>|</span>
                         <a href='signout.php' class='button'>Sign Out</a>"; ?>
         </header>
@@ -69,11 +69,11 @@ header("Location: forum.php?subjectid=$subject_id");
                     <label for="drawer-control" class="drawer-close"></label>
                     <ul>
                         <li><h4>Navigation</h4></li>
-<?php echo"<li><a href='displayprofile.php?userid=$user->id' class='button'>$user->first_name $user->last_name</a></li>
+<?php echo"<li><a href='displayprofile.php?userid=" . $user->get_id() . "' class='button'>" . $user->get_first_name() . " " . $user->get_last_name() . "</a></li>
 					<li><a href='index.php' class='button'>Home</a></li>"; ?>
                         <li><a href="subjectsearch.php" class="button">Subjects</a></li>
                         <li><a href="staffsearch.php" class="button">Staff</a></li>
-                        <?php if ($user->type == 1) {
+                        <?php if ($user->get_type() == 1) {
                             echo"<li><a href='admin/index.php' class='button'>Admin Portal</a></li>";
                         } ?>
                         <li><a href="signout.php" class="button" id="signout">Sign Out</a></li>
@@ -90,3 +90,6 @@ header("Location: forum.php?subjectid=$subject_id");
         </footer>	
     </body>
 </html>
+<?php
+	$mysqli->close();
+?>

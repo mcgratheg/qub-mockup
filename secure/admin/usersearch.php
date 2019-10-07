@@ -59,7 +59,7 @@ $stmt = $user->read_user($email);
 			<?php echo"<a href='index.php' class='logo'>
 			<img src='../../img/bird-bluetit.png' width='50px'></a>
 			<a href='index.php' class='button'>McG VLE</a>
-			<a href='../displayprofile.php?userid=$user->id' class='button' id='userbutton'>$user->first_name $user->last_name</a>
+			<a href='../displayprofile.php?userid=" . $user->get_id() . "' class='button' id='userbutton'>" . $user->get_first_name() . " " . $user->get_last_name() . "</a>
                         <span>|</span>
                         <a href='../signout.php' class='button'>Sign Out</a>";?>
 		</header>
@@ -70,7 +70,7 @@ $stmt = $user->read_user($email);
 				<label for="drawer-control" class="drawer-close"></label>
 				<ul>
 					<li><h4>Navigation</h4></li>
-					<?php echo"<li><a href='../displayprofile.php?userid=$user->id' class='button'>$user->first_name $user->last_name</a></li>
+					<?php echo"<li><a href='../displayprofile.php?userid=" . $user->get_id() . "' class='button'>" . $user->get_first_name() . " " . $user->get_last_name() . "</a></li>
 					<li><a href='index.php' class='button'>Home</a></li>";?>
 					<li><a href="../subjectsearch.php" class="button">Subjects</a></li>
 					<li><a href="../staffsearch.php" class="button">Staff</a></li>
@@ -87,9 +87,9 @@ $stmt = $user->read_user($email);
 						<button class='primary' style='margin-left:20px;'><a href='adduser.php'>Add User</a></button>
 					</div><br>";
 					
-				$user_seacrh = new User($mysqli);
+				$user_search = new User($mysqli);
                                 $user_type = new UserType($mysqli);
-				$result = $user_seacrh->read_user_search();
+				$result = $user_search->read_user_search();
 				if($result->num_rows > 0) {
 					echo "<table>
 								<thead>
@@ -102,16 +102,16 @@ $stmt = $user->read_user($email);
 								</thead>
 								<tbody id='myTable'>";
 					while($row=$result->fetch_array(MYSQLI_ASSOC)) {
-						$user_seacrh->id = $row["UserID"];
-						$user_seacrh->first_name = $row["FirstName"];
-						$user_seacrh->last_name = $row["LastName"];
-						$user_type->name = $row["Type"];
+						$user_search->set_id($row["UserID"]);
+						$user_search->set_first_name($row["FirstName"]);
+						$user_search->set_last_name($row["LastName"]);
+						$user_type->set_name($row["Type"]);
 						
 							echo "<tr>
-									<td data-label='ID'><a href='displayuser.php?id=$user_seacrh->id'>$user_seacrh->id</a></td>
-									<td data-label='First Name'>$user_seacrh->first_name</td>
-									<td data-label='Last Name'>$user_seacrh->last_name</td>
-									<td data-label='User Type'>$user_type->name</td>
+									<td data-label='ID'><a href='displayuser.php?id=" . $user_search->get_id() . "'>" . $user_search->get_id() . "</a></td>
+									<td data-label='First Name'>" . $user_search->get_first_name() . "</td>
+									<td data-label='Last Name'>" . $user_search->get_last_name() . "</td>
+									<td data-label='User Type'>" . $user_type->get_name() . "</td>
 								</tr>";	
 						
 					}
@@ -134,3 +134,6 @@ $stmt = $user->read_user($email);
 		</footer>	
 	</body>
 </html>
+<?php
+	$mysqli->close();
+?>

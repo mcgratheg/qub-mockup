@@ -68,7 +68,7 @@ $stmt = $user->read_user($email);
 <?php echo"<a href='index.php' class='logo'>
 			<img src='../img/bird-bluetit.png' width='50px'></a>
 			<a href='index.php' class='button'>McG VLE</a>
-			<a href='displayprofile.php?userid=$user->id' class='button' id='userbutton'>$user->first_name $user->last_name</a>
+			<a href='displayprofile.php?userid=" . $user->get_id() . "' class='button' id='userbutton'>" . $user->get_first_name() . " " . $user->get_last_name() . "</a>
                         <span>|</span>
                         <a href='signout.php' class='button'>Sign Out</a>"; ?>
         </header>
@@ -79,12 +79,12 @@ $stmt = $user->read_user($email);
                     <label for="drawer-control" class="drawer-close"></label>
                     <ul>
                         <li><h4>Navigation</h4></li>
-<?php echo"<li><a href='displayprofile.php?userid=$user->id' class='button'>$user->first_name $user->last_name</a></li>
+<?php echo"<li><a href='displayprofile.php?userid=" . $user->get_id() . "' class='button'>" . $user->get_first_name() . " " . $user->get_last_name() . "</a></li>
 					<li><a href='index.php' class='button'>Home</a></li>"; ?>
                         <li><a href="subjectsearch.php" class="button">Subjects</a></li>
                         <li><a href="staffsearch.php" class="button">Staff</a></li>
                         <?php
-                        if ($user->type == 1) {
+                        if ($user->get_type() == 1) {
                             echo"<li><a href='admin/index.php' class='button'>Admin Portal</a></li>";
                         }
                         ?>
@@ -103,23 +103,23 @@ $staff_tutor = new Tutor($mysqli);
 $staff_result = $staff_tutor->search_tutor($id);
 if ($staff_result->num_rows > 0) {
     while ($row = $staff_result->fetch_array(MYSQLI_ASSOC)) {
-        $staff_user->first_name = $row["FirstName"];
-        $staff_user->last_name = $row["LastName"];
-        $staff_user->profile_image = $row["ProfileImage"];
-        $staff_login->email = $row["Email"];
-        $staff_tutor->room_number = $row["RoomNumber"];
-        $staff_tutor->room_address = $row["RoomAddress"];
-        $staff_tutor->phone_ext = $row["PhoneExtension"];
+        $staff_user->set_first_name($row["FirstName"]);
+        $staff_user->set_last_name($row["LastName"]);
+        $staff_user->set_profile_image($row["ProfileImage"]);
+        $staff_login->set_email($row["Email"]);
+        $staff_tutor->set_room_number($row["RoomNumber"]);
+        $staff_tutor->set_room_address($row["RoomAddress"]);
+        $staff_tutor->set_phone_ext($row["PhoneExtension"]);
 
         echo "<div class='col-sm-12 col-md'>
 									<div class='card fluid'>
 										<div class='section'>
 											<div class='row'>
 												<div class='col-sm-12 col-md-2' id='profileimage'>
-													<img src='../img/$staff_user->profile_image'>
+													<img src='../img/" . $staff_user->get_profile_image() . "'>
 												</div>
 												<div class='col-sm-12 col-md'>
-													<h4 class='search'>$staff_user->first_name $staff_user->last_name</h4>";
+													<h4 class='search'>" . $staff_user->get_first_name() . " " . $staff_user->get_last_name() . "</h4>";
 
         $class_details = new ClassDetails($mysqli);
         $subject = new Subject($mysqli);
@@ -131,9 +131,9 @@ if ($staff_result->num_rows > 0) {
 										</div>
 										<div class='col-sm-9 col-md-11' id='info'>";
             while ($row = $subjectresult->fecth_array(MYSQLI_ASSOC)) {
-                $subject->code = $row["SubjectCode"];
-                $subject->name = $row["SubjectName"];
-                echo "<p>$code: $subject</p>";
+                $subject->set_code($row["SubjectCode"]);
+                $subject->set_name($row["SubjectName"]);
+                echo "<p>" . $subject->get_code() . " : " .  $subject->get_name() . "</p>";
             }
             echo "</div>
 										</div>
@@ -145,8 +145,8 @@ if ($staff_result->num_rows > 0) {
 															<p>Room:</p>
 														</div>
 														<div class='col-sm-9 col-md-11' id='info'>
-															<p><a href='mailto:$staff_login->email' data-rel='external'>$staff_login->email</a></p>
-															<a href='https://maps.google.com/?q=$staff_tutor->room_address'><p>$staff_tutor->room_number, $staff_tutor->room_address</p></a>
+															<p><a href='mailto:" . $staff_login->get_email() . "' data-rel='external'>" . $staff_login->get_email() . "</a></p>
+															<a href='https://maps.google.com/?q=" . $staff_tutor->get_room_address() . "'><p>" . $staff_tutor->get_room_number() . "," .  $staff_tutor->get_room_address() . "</p></a>
 														</div>
 													</div>
 													<div class='row'>
@@ -154,7 +154,7 @@ if ($staff_result->num_rows > 0) {
 															<p>Phone:</p>
 														</div>
 														<div class='col-sm-9 col-md-11' id='info'>
-															<p>$staff_tutor->phone_ext</p>
+															<p>" . $staff_tutor->get_phone_ext() . "</p>
 														</div>
 													</div>
 												</div>	
@@ -177,3 +177,6 @@ if ($staff_result->num_rows > 0) {
         </footer>	
     </body>
 </html>
+<?php
+	$mysqli->close();
+?>

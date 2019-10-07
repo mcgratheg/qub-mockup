@@ -68,7 +68,7 @@ $stmt = $user->read_user($email);
 <?php echo"<a href='index.php' class='logo'>
 			<img src='../../img/bird-bluetit.png' width='50px'></a>
 			<a href='index.php' class='button'>McG VLE</a>
-			<a href='../displayprofile.php?userid=$user->id' class='button' id='userbutton'>$user->first_name $user->last_name</a>
+			<a href='../displayprofile.php?userid=" . $user->get_id() . "' class='button' id='userbutton'>" . $user->get_first_name() . " " . $user->get_last_name() . "</a>
                         <span>|</span>
                         <a href='../signout.php' class='button'>Sign Out</a>"; ?>
         </header>
@@ -79,7 +79,7 @@ $stmt = $user->read_user($email);
                     <label for="drawer-control" class="drawer-close"></label>
                     <ul>
                         <li><h4>Navigation</h4></li>
-<?php echo"<li><a href='../displayprofile.php?userid=$user->id' class='button'>$user->first_name $user->last_name</a></li>
+<?php echo"<li><a href='../displayprofile.php?userid=" . $user->get_id() . "' class='button'>" . $user->get_first_name() . " " . $user->get_last_name() . "</a></li>
 					<li><a href='index.php' class='button'>Home</a></li>"; ?>
                         <li><a href="../subjectsearch.php" class="button">Subjects</a></li>
                         <li><a href="../staffsearch.php" class="button">Staff</a></li>
@@ -95,7 +95,7 @@ $user_profile = new User($mysqli);
 $user_login = new Login($mysqli);
 $user_type = new UserType($mysqli);
 $result = $user_profile->read_all($user_type, $user_login, $id);
-$displaydate = date('d/m/Y', strtotime($user_profile->date_of_birth));
+$displaydate = date('d/m/Y', strtotime($user_profile->get_date_of_birth()));
 
 
 echo "<div id='titlehead'>
@@ -105,9 +105,9 @@ echo "<div id='titlehead'>
 										<fieldset>
 											<legend>Basic Info</legend>
 											<div id='profileimage'>
-												<img src='../../img/$user_profile->profile_image' width='150px'>
+												<img src='../../img/" . $user_profile->get_profile_image() . "' width='150px'>
 											</div>";
-if ($user_profile->type != 3) {
+if ($user_profile->get_type() != 3) {
     echo "<form method='post' id='uploadForm' action='updateimage.php?userid=$id' enctype='multipart/form-data'>
 												<div class='row responsive-label'>
 													<label for='imginput' id='upload-file' class='button'>Upload Image</label>
@@ -128,7 +128,7 @@ echo "<div class='row'>
 												<p>Type:</p>
 											</div>
 											<div class='col-sm-8 col-md-10' id='info'>
-												<p>$user_type->name</p>
+												<p>" . $user_type->get_name() . "</p>
 											</div>
 										</div>
 										<div class='row'>
@@ -136,7 +136,7 @@ echo "<div class='row'>
 												<p>Name:</p>
 											</div>
 											<div class='col-sm-8 col-md-10' id='info'>
-												<p>$user_profile->first_name $user_profile->last_name</p>
+												<p>" . $user_profile->get_first_name() . " " . $user_profile->get_last_name() . "</p>
 											</div>
 										</div>
 										<div class='row'>
@@ -152,7 +152,7 @@ echo "<div class='row'>
 												<p>Address:</p>
 											</div>
 											<div class='col-sm-8 col-md-10' id='info'>		
-												<p>$user_profile->address<br>$user_profile->city<br>$user_profile->postcode</p>
+												<p>" . $user_profile->get_address() . "<br>" . $user_profile->get_city() . "<br>" . $user_profile->get_postcode() . "</p>
 											</div>
 										</div>	
 										</fieldset>
@@ -164,7 +164,7 @@ echo "<div class='row'>
 													<p>Email:</p>
 												</div>
 												<div class='col-sm-8 col-md-10' id='info'>
-													<p>$user_login->email</p>
+													<p>" . $user_login->get_email() . "</p>
 												</div>
 											</div>
 											<div class='row'>
@@ -188,8 +188,8 @@ echo "<fieldset>
 													</div>
 													<div class='col-sm-8 col-md-10' id='info'>";
 
-if ($user_profile->home_number != NULL) {
-    echo "<p>$user_profile->home_number</p>";
+if ($user_profile->get_home_number() != NULL) {
+    echo "<p>" . $user_profile->get_home_number() . "</p>";
 } else {
     echo "<p>N/A</p>";
 }
@@ -201,29 +201,29 @@ echo "</div>
 												</div>
 												<div class='col-sm-8 col-md-10' id='info'>";
 
-if ($user_profile->mobile_number != NULL) {
-    echo "<p>$user_profile->mobile_number</p>";
+if ($user_profile->get_mobile_number() != NULL) {
+    echo "<p>" . $user_profile->get_mobile_number() . "</p>";
 } else {
     echo "<p>N/A</p>";
 }
 echo "</div>
 										</div>";
 
-if ($user_profile->type == 2) {
+if ($user_profile->get_type() == 2) {
     $tutor_details = new Tutor($mysqli);
     $tutor_result = $tutor_details->read_tutor($id);
     if ($tutor_result->num_rows == 1) {
         while ($row = $tutor_result->fetch_array(MYSQLI_ASSOC)) {
-            $tutor_details->room_number = $row["RoomNumber"];
-            $tutor_details->room_address = $row["RoomAddress"];
-            $tutor_details->phone_ext = $row["PhoneExtension"];
+            $tutor_details->set_room_number($row["RoomNumber"]);
+            $tutor_details->set_room_address($row["RoomAddress"]);
+            $tutor_details->set_phone_ext($row["PhoneExtension"]);
 
             echo "<div class='row'>
 														<div class='col-sm-4 col-md-2' id='labels'>
 															<p>Room:</p>
 														</div>
 														<div class='col-sm-8 col-md-10' id='info'>
-															<p>$tutor_details->room_number</p>
+															<p>" . $tutor_details->get_room_number() . "</p>
 														</div>
 													</div>
 													<div class='row'>
@@ -231,7 +231,7 @@ if ($user_profile->type == 2) {
 															<p>Address:</p>
 														</div>
 														<div class='col-sm-8 col-md-10' id='info'>
-															<p>$tutor_details->room_address</p>
+															<p>" . $tutor_details->get_room_address() . "</p>
 														</div>
 													</div>
 													<div class='row'>
@@ -239,7 +239,7 @@ if ($user_profile->type == 2) {
 															<p>Phone Extension:</p>
 														</div>
 														<div class='col-sm-8 col-md-10' id='info'>
-															<p>$tutor_details->phone_ext</p>
+															<p>" . $tutor_details->get_phone_ext() . "</p>
 														</div>	
 													</div>";
         }
@@ -291,11 +291,11 @@ echo "<fieldset>
 									<legend>Subjects</legend>";
 if ($class_result->num_rows > 0) {
     while ($row = $class_result->fetch_array(MYSQLI_ASSOC)) {
-        $subject->code = $row["SubjectCode"];
-        $subject->name = $row["SubjectName"];
+        $subject->set_code($row["SubjectCode"]);
+        $subject->set_name($row["SubjectName"]);
 
         echo "<div class='row'>
-										<p>$subject->code : $subject->name</p>
+										<p>" . $subject->get_code() . " : " . $subject->get_name() . "</p>
 									</div>";
     }
 } else {
@@ -324,3 +324,6 @@ echo "<div class='row' id='nav'>
         </footer>	
     </body>
 </html>
+<?php
+	$mysqli->close();
+?>

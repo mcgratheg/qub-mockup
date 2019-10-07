@@ -49,7 +49,7 @@ $stmt = $user->read_user($email);
 			<?php echo"<a href='index.php' class='logo'>
 			<img src='../img/bird-bluetit.png' width='50px'></a>
 			<a href='index.php' class='button'>McG VLE</a>
-			<a href='displayprofile.php?userid=$user->id' class='button' id='userbutton'>$user->first_name $user->last_name</a>
+			<a href='displayprofile.php?userid=" . $user->get_id() . "' class='button' id='userbutton'>" . $user->get_first_name() . " " . $user->get_last_name() . "</a>
                         <span>|</span>
                         <a href='signout.php' class='button'>Sign Out</a>";?>
 		</header>
@@ -60,11 +60,11 @@ $stmt = $user->read_user($email);
 				<label for="drawer-control" class="drawer-close"></label>
 				<ul>
 					<li><h4>Navigation</h4></li>
-					<?php echo"<li><a href='displayprofile.php?userid=$user->id' class='button'>$user->first_name $user->last_name</a></li>
+					<?php echo"<li><a href='displayprofile.php?userid=" . $user->get_id() . "' class='button'>" . $user->get_first_name() . " " . $user->get_last_name() . "</a></li>
 					<li><a href='index.php' class='button'>Home</a></li>";?>
 					<li><a href="subjectsearch.php" class="button">Subjects</a></li>
 					<li><a href="staffsearch.php" class="button">Staff</a></li>
-					<?php if($user->type==1){echo"<li><a href='admin/index.php' class='button'>Admin Portal</a></li>";}?>
+					<?php if($user->get_type()==1){echo"<li><a href='admin/index.php' class='button'>Admin Portal</a></li>";}?>
 					<li><a href="signout.php" class="button" id="signout">Sign Out</a></li>
 					
 				</ul>
@@ -78,25 +78,25 @@ $stmt = $user->read_user($email);
 				
 				if($result->num_rows == 1) {
 					$row = $result->fetch_array(MYSQLI_ASSOC);
-						$subject->name = $row["SubjectName"];
-						$subject->description = $row["SubjectDescription"];
-                                                $subject->code = $row["SubjectCode"];
+						$subject->set_name($row["SubjectName"]);
+						$subject->set_description($row["SubjectDescription"]);
+                                                $subject->set_code($row["SubjectCode"]);
 						
 					 echo "<div id='titlehead'>
-								<h2>$subject->code : $subject->name</h2>
+								<h2>" . $subject->get_code() . " : " . $subject->get_name() . "</h2>
 								<div class='row'>
 									<h5>Information</h5>
 									<span>|</span>
-									<p><a href='documents.php?subject=$subject->code'>Resources</a></p>
+									<p><a href='documents.php?subject=" . $subject->get_code() . "'>Resources</a></p>
 									<span>|</span>
-									<p><a href='forum.php?subject=$subject->code'>Forum</a></p>
+									<p><a href='forum.php?subject=" . $subject->get_code() . "'>Forum</a></p>
 								</div>	
 							</div><br>";	
 					
-					if($subject->description!=""){
+					if($subject->get_description() !=""){
 						echo "<div class='col-sm-12 col-md-8'>
 									<h4>Module Description</h4>
-									<pre>$subject->description</pre>
+									<pre>" . $subject->get_description() . "</pre>
 								</div>";
 						}else{
 						echo "<div class='col-sm-12 col-md-8'>
@@ -107,9 +107,9 @@ $stmt = $user->read_user($email);
 					
 				}
 				
-				if($user->type==1){
+				if($user->get_type()==1){
 					echo "<div class='row' id='nav'>
-							<button class='primary' style='margin-left:20px;'><a href='admin/editsubject.php?subject=$subject->code'>Edit Subject</a></button>
+							<button class='primary' style='margin-left:20px;'><a href='admin/editsubject.php?subject=" . $subject->get_code() . "'>Edit Subject</a></button>
 						</div>";
 				}
 
@@ -124,3 +124,6 @@ $stmt = $user->read_user($email);
 		</footer>	
 	</body>
 </html>
+<?php
+	$mysqli->close();
+?>

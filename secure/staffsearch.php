@@ -56,7 +56,7 @@ $stmt = $user->read_user($email);
 			<?php echo"<a href='index.php' class='logo'>
 			<img src='../img/bird-bluetit.png' width='50px'></a>
 			<a href='index.php' class='button'>McG VLE</a>
-			<a href='displayprofile.php?userid=$user->id' class='button' id='userbutton'>$user->first_name $user->last_name</a>
+			<a href='displayprofile.php?userid=" . $user->get_id() . "' class='button' id='userbutton'>" . $user->get_first_name() . " " . $user->get_last_name() . "</a>
                         <span>|</span>
                         <a href='signout.php' class='button'>Sign Out</a>";?>
 		</header>
@@ -67,11 +67,11 @@ $stmt = $user->read_user($email);
 				<label for="drawer-control" class="drawer-close"></label>
 				<ul>
 					<li><h4>Navigation</h4></li>
-					<?php echo"<li><a href='displayprofile.php?userid=$user->id' class='button'>$user->first_name $user->last_name</a></li>
+					<?php echo"<li><a href='displayprofile.php?userid=" . $user->get_id() . "' class='button'>" . $user->get_first_name() . " " . $user->get_last_name() . "</a></li>
 					<li><a href='index.php' class='button'>Home</a></li>";?>
 					<li><a href="subjectsearch.php" class="button">Subjects</a></li>
 					<li><a href="staffsearch.php" class="button">Staff</a></li>
-                                        <?php if($user->type == 1){ echo"<li><a href='admin/index.php' class='button'>Admin Portal</a></li>";}?>
+                                        <?php if($user->get_type() == 1){ echo"<li><a href='admin/index.php' class='button'>Admin Portal</a></li>";}?>
 					<li><a href="signout.php" class="button" id="signout">Sign Out</a></li>
 				</ul>
 			</nav>
@@ -85,20 +85,20 @@ $stmt = $user->read_user($email);
                                 $result = $staff->read_tutor();
 				if($result->num_rows > 0) {
 					while($row= $result->fetch_array(MYSQLI_ASSOC)) {
-						$staff->id=$row["UserID"];
-						$staff->first_name=$row["FirstName"];
-						$staff->last_name=$row["LastName"];
-						$staff->profile_image=$row["ProfileImage"];
+						$staff->set_id($row["UserID"]);
+						$staff->set_first_name($row["FirstName"]);
+						$staff->set_last_name($row["LastName"]);
+						$staff->set_profile_image($row["ProfileImage"]);
 						
 						echo "<div class='col-sm-12 col-md-7'>
 									<div class='card fluid'>
 										<div class='section'>
 											<div class='row'>
 												<div class='col-sm-12 col-md-2' id='profileimage'>
-													<img src='../img/$staff->profile_image' width='120px'>
+													<img src='../img/" . $staff->get_profile_image() . "' width='120px'>
 												</div>
 												<div class='col-sm-12 col-md'>
-													<h4 class='search'><a href='displaystaff.php?id=$staff->id'>$staff->first_name $staff->last_name</a></h4>
+													<h4 class='search'><a href='displaystaff.php?id=" . $staff->get_id() . "'>" . $staff->get_first_name() . " " . $staff->get_last_name() . "</a></h4>
 												</div>	
 											</div>
 										</div>
@@ -116,4 +116,7 @@ $stmt = $user->read_user($email);
 			<p> 40105701 | CSC7062 Web Development Project</p>
 		</footer>	
 	</body>
-</html>	
+</html>
+<?php
+	$mysqli->close();
+?>

@@ -66,7 +66,7 @@ $stmt = $user->read_user($email);
 			<?php echo"<a href='index.php' class='logo'>
 			<img src='../../img/bird-bluetit.png' width='50px'></a>
 			<a href='index.php' class='button'>McG VLE</a>
-			<a href='displayprofile.php?userid=$user->id' class='button' id='userbutton'>$user->first_name $user->last_name</a>
+			<a href='displayprofile.php?userid=" . $user->get_id() . "' class='button' id='userbutton'>" . $user->get_first_name() . " " . $user->get_last_name() . "</a>
                         <span>|</span>
                         <a href='signout.php' class='button'>Sign Out</a>";?>
 		</header>
@@ -77,7 +77,7 @@ $stmt = $user->read_user($email);
 				<label for="drawer-control" class="drawer-close"></label>
 				<ul>
 					<li><h4>Navigation</h4></li>
-					<?php echo"<li><a href='../displayprofile.php?userid=$user->id' class='button'>$user->first_name $user->last_name</a></li>
+					<?php echo"<li><a href='../displayprofile.php?userid=" . $user->get_id() . "' class='button'>" . $user->get_first_name() . " " . $user->get_last_name() . "</a></li>
 					<li><a href='index.php' class='button'>Home</a></li>";?>
 					<li><a href="../subjectsearch.php" class="button">Subjects</a></li>
 					<li><a href="../staffsearch.php" class="button">Staff</a></li>
@@ -93,9 +93,9 @@ $stmt = $user->read_user($email);
 					
 					if($subject_result->num_rows==1){
 						while($row=$subject_result->fetch_array(MYSQLI_ASSOC)){
-							$subject->id = $row["SubjectID"];
-							$subject->name = $row["SubjectName"];
-							$subject->description = $row["SubjectDescription"];
+							$subject->set_id($row["SubjectID"]);
+							$subject->set_name($row["SubjectName"]);
+							$subject->set_description($row["SubjectDescription"]);
 							
 					echo "<div id='titlehead'>
 							<h3>Edit Subject</h3>
@@ -109,7 +109,7 @@ $stmt = $user->read_user($email);
 										<label for='subjectname'>Subject Name</label>
 									</div>
 									<div class='col-sm-12 col-md'>
-										<input type='text' value='$subject->name' id='subjectname' name='subjectname' required='required' style='width:75%;'>
+										<input type='text' value='" . $subject->get_name() . "' id='subjectname' name='subjectname' required='required' style='width:75%;'>
 									</div>
 								</div>
 								<div class='row responsive-label'>
@@ -125,11 +125,11 @@ $stmt = $user->read_user($email);
 										<label for='subjectdesc'>Subject Description</label>
 									</div>
 									<div class='col-sm-12 col-md'>
-										<textarea id='description' name='description' placeholder='Add new description...' style='width:95%;height:250px'>$subject->description</textarea>
+										<textarea id='description' name='description' placeholder='Add new description...' style='width:95%;height:250px'>" . $subject->get_description() . "</textarea>
 									</div>
 								</div>
 								<div class='hide-form'>
-									<input type='number' name='subjectid' class='hidden' value='$subject->id' id='hideform'>
+									<input type='number' name='subjectid' class='hidden' value='" . $subject->get_id() . "' id='hideform'>
 								</div>
 							</fieldset>
 							<div class='row'>		
@@ -150,3 +150,6 @@ $stmt = $user->read_user($email);
 		</footer>	
 	</body>
 </html>
+<?php
+	$mysqli->close();
+?>

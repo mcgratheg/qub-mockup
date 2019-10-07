@@ -58,7 +58,7 @@ $stmt = $user->read_user($email);
 			<?php echo"<a href='index.php' class='logo'>
 			<img src='../img/bird-bluetit.png' width='50px'></a>
 			<a href='index.php' class='button'>McG VLE</a>
-			<a href='displayprofile.php?userid=$user->id' class='button' id='userbutton'>$user->first_name $user->last_name</a>
+			<a href='displayprofile.php?userid=" . $user->get_id() . "' class='button' id='userbutton'>" . $user->get_first_name() . " " . $user->get_last_name() . "</a>
                         <span>|</span>
                         <a href='signout.php' class='button'>Sign Out</a>";?>
 		</header>
@@ -69,11 +69,11 @@ $stmt = $user->read_user($email);
 				<label for="drawer-control" class="drawer-close"></label>
 				<ul>
 					<li><h4>Navigation</h4></li>
-					<?php echo"<li><a href='displayprofile.php?userid=$user->id' class='button'>$user->first_name $user->last_name</a></li>
+					<?php echo"<li><a href='displayprofile.php?userid=" . $user->get_id() . "' class='button'>" . $user->get_first_name() . " " . $user->get_last_name() . "</a></li>
 					<li><a href='index.php' class='button'>Home</a></li>";?>
 					<li><a href="subjectsearch.php" class="button">Subjects</a></li>
 					<li><a href="staffsearch.php" class="button">Staff</a></li>
-                                        <?php if($user->type == 1){echo"<li><a href='admin/index.php' class='button'>Admin Portal</a></li>";}?>
+                                        <?php if($user->get_type() == 1){echo"<li><a href='admin/index.php' class='button'>Admin Portal</a></li>";}?>
 					<li><a href="signout.php" class="button" id="signout">Sign Out</a></li>
 				</ul>
 			</nav>
@@ -87,9 +87,9 @@ $stmt = $user->read_user($email);
 
 					if($result->num_rows > 0) {
 						while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-							$subject->name = $row["SubjectName"];
-							$subject->code = $row["SubjectCode"];
-							echo "<h2>$subject->code | $subject->name Forum</h2><br>";
+							$subject->set_name($row["SubjectName"]);
+							$subject->set_code($row["SubjectCode"]);
+							echo "<h2>" . $subject->get_code() . " | " . $subject->get_name() . " Forum</h2><br>";
 						}
 					
 					
@@ -98,24 +98,24 @@ $stmt = $user->read_user($email);
                                         $topic_result = $topic->read_topic($topicid);
 					if($topic_result->num_rows > 0) {
 						while ($row = $topic_result->fetch_array(MYSQLI_ASSOC)) {
-							$topic->id = $row["TopicID"];
-							$topic->title = $row["TopicTitle"];
-							$topic->content = $row["TopicContent"];
-							$topic->date = date('d/m/y', strtotime($row["TopicDate"]));
-							$topic_user->first_name = $row["FirstName"];
-							$topic_user->last_name = $row["LastName"];
-							$topic->topic_by_id = $row["Subject_ID"];
+							$topic->set_id($row["TopicID"]);
+							$topic->set_title($row["TopicTitle"]);
+							$topic->set_content($row["TopicContent"]);
+							$topic->set_date(date('d/m/y', strtotime($row["TopicDate"])));
+							$topic_user->set_first_name($row["FirstName"]);
+							$topic_user->set_last_name($row["LastName"]);
+							$topic->set_topic_by_id($row["Subject_ID"]);
 							
 							echo "<div class='col-sm-12 col-md-9' id='topiccard'>
 									<div class='card fluid'>
 										<div class='section'>
 											<div class='col-sm-12 col-md-3'>
-												<p>$topic_user->first_name $topic_user->last_name</p>
+												<p>" . $topic_user->get_first_name() . " " . $topic_user->get_last_name() . "</p>
 												<p>Created $topic->date</p>
 											</div>
 											<div class='col-sm-12 col-md-9'>
-												<h3>$topic->title</h3>
-												<p>$topic->content</p>
+												<h3>" . $topic->get_title() . "</h3>
+												<p>" . $topic->get_content() . "</p>
 											</div>
 										</div>
 									</div>
@@ -128,27 +128,27 @@ $stmt = $user->read_user($email);
                                                 $reply_result = $reply->read_reply($topicid);
 						if($reply_result->num_rows > 0) {
 							while ($row = $reply_result->fetch_array(MYSQLI_ASSOC)) {
-								$reply->content = $row["ReplyContent"];
-								$reply->date = date('d/m/y H:i', strtotime($row["ReplyDate"]));
-								$reply_user->first_name = $row["FirstName"];
-								$reply_user->last_name = $row["LastName"];
-								$reply_user->type = $row["UserType_ID"];
+								$reply->set_content($row["ReplyContent"]);
+								$reply->set_date(date('d/m/y H:i', strtotime($row["ReplyDate"])));
+								$reply_user->set_first_name($row["FirstName"]);
+								$reply_user->set_last_name($row["LastName"]);
+								$reply_user->set_type($row["UserType_ID"]);
 								
 								echo "<div class='col-sm-12' id='reply'>
 										<div class='card fluid' id='replycard'>
 											<div class='section'>
 												<div class='col-sm-12 col-md-3'>
-													<p>$reply_user->first_name $reply_user->last_name, ";
+													<p>" . $reply_user->get_first_name() . " " . $reply_user->get_last_name() . ", ";
 													
-													if($reply_user->type == 2){
+													if($reply_user->get_type() == 2){
 														echo "<b>Tutor</b>";
 													}
 													
 												echo "</p>
-													<p>$reply->date</p>
+													<p>" . $reply->get_date() . "</p>
 												</div>
 												<div class='col-sm-12 col-sm-9'>
-													<p>$reply->content</p>
+													<p>" . $reply->get_content() . "</p>
 												</div>
 											</div>
 										</div>
@@ -168,8 +168,8 @@ $stmt = $user->read_user($email);
 												<textarea class='reply-box' value='' name='reply' required='required' style='width:95%;height:250px'></textarea>
 											</div>
 											<div class='hide-form'>
-												<input type='number' name='topic' class='hidden' value='$topic->id' id='hideform'>
-												<input type='number' name='user' class='hidden' value='$user->id' id='hideform'>
+												<input type='number' name='topic' class='hidden' value='" . $topic->get_id() . "' id='hideform'>
+												<input type='number' name='user' class='hidden' value='" . $user->get_id() . "' id='hideform'>
 											</div>
 											<div class='row'>		
 												<input type='submit' class='primary' value='Reply'>
@@ -180,7 +180,7 @@ $stmt = $user->read_user($email);
 							<br>";
 					
 						echo "<div class='row' id='nav'>
-								<a href='forum.php?subject=$subject->code'><button class='inverse' id='button-right'>Back</button></a>
+								<a href='forum.php?subject=" . $subject->get_code() . "'><button class='inverse' id='button-right'>Back</button></a>
 							</div>
 							<br>";
 					}
@@ -196,3 +196,6 @@ $stmt = $user->read_user($email);
 		</footer>	
 	</body>
 </html>
+<?php
+	$mysqli->close();
+?>

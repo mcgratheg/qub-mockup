@@ -68,7 +68,7 @@ $stmt = $user->read_user($email);
             <?php echo"<a href='index.php' class='logo'>
 			<img src='../img/bird-bluetit.png' width='50px'></a>
 			<a href='index.php' class='button'>McG VLE</a>
-			<a href='displayprofile.php?userid=$user->id' class='button' id='userbutton'>$user->first_name $user->last_name</a>
+			<a href='displayprofile.php?userid=" . $user->get_id() . "' class='button' id='userbutton'>" . $user->get_first_name() . " " . $user->get_last_name() . "</a>
                         <span>|</span>
                         <a href='signout.php' class='button'>Sign Out</a>"; ?>
         </header>
@@ -79,12 +79,12 @@ $stmt = $user->read_user($email);
                     <label for="drawer-control" class="drawer-close"></label>
                     <ul>
                         <li><h4>Navigation</h4></li>
-                        <?php echo"<li><a href='displayprofile.php?userid=$user->id' class='button'>$user->first_name $user->last_name</a></li>
+                        <?php echo"<li><a href='displayprofile.php?userid=" . $user->get_id() . "' class='button'>" . $user->get_first_name() . " " . $user->get_last_name() . "</a></li>
 					<li><a href='index.php' class='button'>Home</a></li>"; ?>
                         <li><a href="subjectsearch.php" class="button">Subjects</a></li>
                         <li><a href="staffsearch.php" class="button">Staff</a></li>
                         <?php
-                        if ($user->type == 1) {
+                        if ($user->get_type() == 1) {
                             echo"<li><a href='admin/index.php' class='button'>Admin Portal</a></li>";
                         }
                         ?>
@@ -102,7 +102,7 @@ $stmt = $user->read_user($email);
                     $profile_tutor = new Tutor($mysqli);
 
                     $query = $profile_user->read_all($profile_type, $profile_login, $id);
-                    $displaydate = date('d/m/Y', strtotime($profile_user->date_of_birth));
+                    $displaydate = date('d/m/Y', strtotime($profile_user->get_date_of_birth()));
 
 
                     echo "<div id='titlehead'>
@@ -112,9 +112,9 @@ $stmt = $user->read_user($email);
 										<fieldset>
 											<legend>Basic Info</legend>
 											<div id='profileimage'>
-												<img src='../img/$profile_user->profile_image' width='150px'>
+												<img src='../img/" . $profile_user->get_profile_image() . "' width='150px'>
 											</div>";
-                    if ($profile_user->type != 3) {
+                    if ($profile_user->get_type() != 3) {
                         echo "<form method='post' id='uploadForm' action='updateimage.php?userid=$id' enctype='multipart/form-data'>
 												<div class='row responsive-label'>
 													<label for='imginput' id='upload-file' class='button'>Upload Image</label>
@@ -135,7 +135,7 @@ $stmt = $user->read_user($email);
 												<p>Name:</p>
 											</div>
 											<div class='col-sm-8 col-md-10' id='info'>
-												<p>$profile_user->first_name $profile_user->last_name</p>
+												<p>" . $profile_user->get_first_name() . " " . $profile_user->get_last_name() . "</p>
 											</div>
 										</div>
 										<div class='row'>
@@ -151,7 +151,7 @@ $stmt = $user->read_user($email);
 												<p>Address:</p>
 											</div>
 											<div class='col-sm-8 col-md-10' id='info'>		
-												<p>$profile_user->address<br>$profile_user->city<br>$profile_user->postcode</p>
+												<p>" . $profile_user->get_address() . "<br>" . $profile_user->get_city() . "<br>" . $profile_user->get_postcode() . "</p>
 											</div>
 										</div>	
 										</fieldset>
@@ -163,7 +163,7 @@ $stmt = $user->read_user($email);
 													<p>Email:</p>
 												</div>
 												<div class='col-sm-8 col-md-10' id='info'>
-													<p>$profile_login->email</p>
+													<p>" . $profile_login->get_email() . "</p>
 												</div>
 											</div>
 											<div class='row'>
@@ -188,8 +188,8 @@ $stmt = $user->read_user($email);
 													</div>
 													<div class='col-sm-8 col-md-10' id='info'>";
 
-                    if ($profile_user->home_number != NULL) {
-                        echo "<p>$profile_user->home_number</p>";
+                    if ($profile_user->get_home_number() != NULL) {
+                        echo "<p>" . $profile_user->get_home_number() . "</p>";
                     } else {
                         echo "<p>N/A</p>";
                     }
@@ -201,15 +201,15 @@ $stmt = $user->read_user($email);
 												</div>
 												<div class='col-sm-8 col-md-10' id='info'>";
 
-                    if ($profile_user->mobile_number != NULL) {
-                        echo "<p>$profile_user->mobile_number</p>";
+                    if ($profile_user->get_mobile_number() != NULL) {
+                        echo "<p>" . $profile_user->get_mobile_number() . "</p>";
                     } else {
                         echo "<p>N/A</p>";
                     }
                     echo "</div>
 										</div>";
 
-                    if ($profileUser->type == 2) {
+                    if ($profile_user->get_type() == 2) {
                         
                         $stmt = $profile_tutor->read_tutor($id);
                         
@@ -218,7 +218,7 @@ $stmt = $user->read_user($email);
 														<p>Room:</p>
 													</div>
 													<div class='col-sm-8 col-md-10' id='info'>
-														<p>$profile_tutor->room_number</p>
+														<p>" . $profile_tutor->get_room_number() . "</p>
 													</div>
 												</div>
 												<div class='row'>
@@ -226,7 +226,7 @@ $stmt = $user->read_user($email);
 														<p>Address:</p>
 													</div>
 													<div class='col-sm-8 col-md-10' id='info'>
-														<p>$profile_tutor->room_address</p>
+														<p>" . $profile_tutor->get_room_address() . "</p>
 													</div>
 												</div>
 												<div class='row'>
@@ -234,7 +234,7 @@ $stmt = $user->read_user($email);
 														<p>Phone Extension:</p>
 													</div>
 													<div class='col-sm-8 col-md-10' id='info'>
-														<p>$profile_tutor->phone_ext</p>
+														<p>" . $profile_tutor->get_phone_ext() . "</p>
 													</div>	
 												</div>";
                     }
@@ -258,3 +258,6 @@ $stmt = $user->read_user($email);
         </footer>	
     </body>
 </html>
+<?php
+	$mysqli->close();
+?>

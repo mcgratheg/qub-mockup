@@ -70,7 +70,7 @@ $login = new Login($mysqli);
 					if($result){
 						$subject = "Your New Password";
  
-						$message = "Hi $user->first_name,
+						$message = "Hi " . $user->get_first_name() . ",
 						Please use this password to login $pass
 						Once logged in, please change your password as soon as possible.
 						Regards,
@@ -97,3 +97,6 @@ $login = new Login($mysqli);
 		</footer>	
 	</body>
 </html>
+<?php
+	$mysqli->close();
+?>

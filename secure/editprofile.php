@@ -77,7 +77,7 @@ $stmt = $user->read_user($email);
 <?php echo"<a href='index.php' class='logo'>
 			<img src='../img/bird-bluetit.png' width='50px'></a>
 			<a href='index.php' class='button'>McG VLE</a>
-			<a href='displayprofile.php?userid=$user->id' class='button' id='userbutton'>$user->first_name $user->last_name</a>
+			<a href='displayprofile.php?userid=" . $user->get_id() . "' class='button' id='userbutton'>" . $user->get_first_name() . " " . $user->get_last_name() . "</a>
                         <span>|</span>
                         <a href='signout.php' class='button'>Sign Out</a>"; ?>
         </header>
@@ -88,11 +88,11 @@ $stmt = $user->read_user($email);
                     <label for="drawer-control" class="drawer-close"></label>
                     <ul>
                         <li><h4>Navigation</h4></li>
-<?php echo"<li><a href='displayprofile.php?userid=$user->id' class='button'>$user->first_name $user->last_name</a></li>
+<?php echo"<li><a href='displayprofile.php?userid=" . $user->get_id() . "' class='button'>" . $user->get_first_name() . " " . $user->get_last_name() . "</a></li>
 					<li><a href='index.php' class='button'>Home</a></li>"; ?>
                         <li><a href="subjectsearch.php" class="button">Subjects</a></li>
                         <li><a href="staffsearch.php" class="button">Staff</a></li>
-                        <?php if ($user->type == 1) {
+                        <?php if ($user->get_type() == 1) {
                             echo"<li><a href='admin/index.php' class='button'>Admin Portal</a></li>";
                         } ?>
                         <li><a href="signout.php" class="button" id="signout">Sign Out</a></li>
@@ -110,7 +110,7 @@ $stmt = $user->read_user($email);
                     echo "<div id='titlehead'>
 									<h4>Edit Details</h4>
 								</div>	
-									<form method='post' id='myForm' action='updateuser.php?userid=$user_profile->id'>
+									<form method='post' id='myForm' action='updateuser.php?userid=" . $user_profile->get_id() . "'>
 										<fieldset>
 											<legend>Basic Info</legend>
 											<div class='row responsive-label'>
@@ -118,7 +118,7 @@ $stmt = $user->read_user($email);
 													<label for='firstname'>First Name</label>
 												</div>
 												<div class='col-sm-12 col-md'>
-													<input type='text' value='$user_profile->first_name' name='firstname' maxlength='20' required='required' style='width:75%;'>
+													<input type='text' value='" . $user_profile->get_first_name() . "' name='firstname' maxlength='20' required='required' style='width:75%;'>
 												</div>	
 											</div>
 											<div class='row responsive-label'>
@@ -126,7 +126,7 @@ $stmt = $user->read_user($email);
 													<label for='lastname'>Last Name</label>
 												</div>
 												<div class='col-sm-12 col-md'>
-													<input type='text' value='$user_profile->last_name' name='lastname' maxlength='40' required='required' style='width:75%;'>
+													<input type='text' value='" . $user_profile->get_last_name() . "' name='lastname' maxlength='40' required='required' style='width:75%;'>
 												</div>
 											</div>
 											<div class='row responsive-label'>
@@ -134,7 +134,7 @@ $stmt = $user->read_user($email);
 													<label for='dateofbirth'>Date Of Birth</label>
 												</div>
 												<div class='col-sm-12 col-md'>
-													<input type='text' value='$user_profile->date_of_birth' name='dateofbirth' id='datepicker' required='required' style='width:50%;'>
+													<input type='text' value='" . $user_profile->get_date_of_birth() > "' name='dateofbirth' id='datepicker' required='required' style='width:50%;'>
 												</div>
 											</div>
 											<div class='row responsive-label'>
@@ -142,7 +142,7 @@ $stmt = $user->read_user($email);
 													<label for='address'>Address Line</label>
 												</div>
 												<div class='col-sm-12 col-md'>
-													<input type='text' value='$user_profile->address' name='address' required='required' style='width:75%;'>
+													<input type='text' value='" . $user_profile->get_address() . "' name='address' required='required' style='width:75%;'>
 												</div>
 											</div>
 											<div class='row responsive-label'>
@@ -150,7 +150,7 @@ $stmt = $user->read_user($email);
 													<label for='city'>City</label>
 												</div>
 												<div class='col-sm-12 col-md'>
-													<input type='text' value='$user_profile->city' name='city' required='required' style='width:75%;'>
+													<input type='text' value='" . $user_profile->get_city() . "' name='city' required='required' style='width:75%;'>
 												</div>
 											</div>
 											<div class='row responsive-label'>
@@ -162,8 +162,8 @@ $stmt = $user->read_user($email);
 												</div>
 											</div>
 											<div class='hide-form'>
-												<input type='number' name='user' class='hidden' value='$user_profile->id' id='hideform'>
-												<input type='number' name='usertype' class='hidden' value='$user_profile->type' id='hideform'>
+												<input type='number' name='user' class='hidden' value='" . $user_profile->get_id() . "' id='hideform'>
+												<input type='number' name='usertype' class='hidden' value='" . $user_profile->get_type() . "' id='hideform'>
 											</div>
 										</fieldset>";
 
@@ -176,7 +176,7 @@ $stmt = $user->read_user($email);
 														<label for='roomnumber'>Home No.</label>
 													</div>
 													<div class='col-sm-12 col-md'>
-														<input type='text' value='$user_profile->home_number' name='homenumber' style='width:75%;'>
+														<input type='text' value='" . $user_profile->get_home_number() . "' name='homenumber' style='width:75%;'>
 													</div>
 												</div>
 												<div class='row responsive label'>
@@ -184,7 +184,7 @@ $stmt = $user->read_user($email);
 														<label for='roomnumber'>Mobile No.</label>
 													</div>
 													<div class='col-sm-12 col-md'>
-														<input type='text' value='$user_profile->mobile_number' name='mobilenumber' style='width:75%;'>
+														<input type='text' value='" . $user_profile->get_mobile_number() . "' name='mobilenumber' style='width:75%;'>
 													</div>
 												</div>
 											</fieldset>";
@@ -204,3 +204,6 @@ $stmt = $user->read_user($email);
         </footer>	
     </body>
 </html>
+<?php
+	$mysqli->close();
+?>
