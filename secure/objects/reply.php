@@ -92,12 +92,5 @@ class Reply {
         
         $stmt->close();
     }
-    
-    public function update() {
-        
-    }
-    
-    public function delete() {
-        
-    }
+
 }

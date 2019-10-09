@@ -291,20 +291,5 @@ class User {
         return $msg;
        
     }  
-    
-    public function delete($userid) {
-        
-        $query = "DELETE FROM 7062prouser WHERE UserID=?";
-        
-        $stmt = $this->connection->prepare($query);
-        $stmt->bind_param('i', $userid);
-        
-        if($stmt->execute()) {
-            return true;
-        } else {
-            return false;
-        }
-        
-        $stmt->close();       
-    }
+
 }

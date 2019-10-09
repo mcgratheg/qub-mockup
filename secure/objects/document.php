@@ -127,12 +127,4 @@ class Document {
         return $msg;
     }
 
-    public function update() {
-        
-    }
-
-    public function delete() {
-        
-    }
-
 }

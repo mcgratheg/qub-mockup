@@ -85,12 +85,4 @@ class ClassDetails {
         $stmt->close();
     }
 
-    public function update() {
-        
-    }
-
-    public function delete() {
-        
-    }
-
 }

@@ -1,8 +1,9 @@
 {
   "ExpandedNodes": [
     "",
-    "\\secure"
+    "\\secure",
+    "\\secure\\admin"
   ],
-  "SelectedNode": "\\secure\\documents.php",
+  "SelectedNode": "\\secure\\admin\\usersearch.php",
   "PreviewInSolutionExplorer": false
 }

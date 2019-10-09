@@ -54,16 +54,5 @@ class UserType {
         
         return $type;
     }
-    
-    public function create() {
-        
-    }
-    
-    public function update() {
-        
-    }
-    
-    public function delete() {
-        
-    }
+
 }

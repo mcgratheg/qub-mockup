@@ -91,8 +91,5 @@ class Login {
         
         return $result;
     }
-    
-    public function delete() {
-        
-    }
+
 }

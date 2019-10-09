@@ -99,8 +99,4 @@ class Tutor {
         $stmt->close();
     }
 
-    public function delete() {
-        
-    }
-
 }

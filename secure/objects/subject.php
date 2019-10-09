@@ -125,9 +125,6 @@ class Subject {
         $stmt->execute();
         $stmt->close();
     }
-    
-    public function delete() {
-        
-    }
+
 }
 

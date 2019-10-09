@@ -102,12 +102,5 @@ class Topic {
         
         $stmt->close();        
     }
-    
-    public function update() {
-        
-    }
-    
-    public function delete() {
-        
-    }
+
 }
