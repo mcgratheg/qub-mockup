@@ -27,6 +27,3 @@ Based forum layout on QUB student university website and built functionality fro
 * PHP/MySQL foum based on article: https://code.tutsplus.com/tutorials/how-to-create-a-phpmysql-powered-forum-from-scratch--net-10188
 * PHP OOP CRUD Tutorial - Step-By-Step Guide!: https://www.codeofaninja.com/2014/06/php-object-oriented-crud-example-oop.html
 * PHP OOP Database class using MySQLI and Singleton pattern: https://gist.github.com/jonashansen229/4534794
-
-## TODO
-Encapsulate object details
